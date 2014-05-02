@@ -140,7 +140,7 @@ spocc_blanktheme <- function() {
 #' @export
 #' @examples \dontrun{
 #' spnames <- c('Accipiter striatus', 'Setophaga caerulescens', 'Spinus tristis')
-#' out <- occ(query=spnames, from='gbif', gbifopts=list(georeferenced=TRUE))
+#' out <- occ(query=spnames, from='gbif', gbifopts=list(hasCoordinate=TRUE))
 #' occ2df(out)
 #' }
 occ2df <- function(obj, what = "data") {
@@ -153,7 +153,7 @@ occ2df <- function(obj, what = "data") {
     ee <- foolist(obj$ecoengine)
     aw <- foolist(obj$antweb)
     tmp <- data.frame(rbindlist(list(
-      data.frame(name = aa$name, longitude = aa$longitude, latitude = aa$latitude, prov = aa$prov), 
+      data.frame(name = aa$name, longitude = aa$decimalLongitude, latitude = aa$decimalLatitude, prov = aa$prov), 
       data.frame(name = bb$name, longitude = bb$decimalLongitude, latitude = bb$decimalLatitude, prov = bb$prov), 
       data.frame(name = cc$name, longitude = cc$Longitude, latitude = cc$Latitude, prov = cc$prov), 
       data.frame(name = dd$name, longitude = dd$lng, latitude = dd$lat, prov = dd$prov), 
@@ -176,7 +176,7 @@ occ2df <- function(obj, what = "data") {
 #' @export
 #' @examples \dontrun{
 #' spnames <- c('Accipiter striatus', 'Setophaga caerulescens', 'Spinus tristis')
-#' out <- occ(query=spnames, from='gbif', gbifopts=list(georeferenced=TRUE))
+#' out <- occ(query=spnames, from='gbif', gbifopts=list(hasCoordinate=TRUE))
 #' 
 #' # pass in output of occ directly to occ2sp
 #' occ2sp(out)

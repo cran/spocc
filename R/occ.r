@@ -41,6 +41,7 @@
 #' # Geometry
 #' ## Pass in geometry parameter to all sources. This constraints the search to the 
 #' ## specified polygon for all sources, gbif and bison in this example.
+#' ## Check out \url{http://arthur-e.github.io/Wicket/sandbox-gmaps3.html} to get a WKT string
 #' occ(query='Accipiter striatus', from='gbif', 
 #'    geometry='POLYGON((30.1 10.1, 10 20, 20 60, 60 60, 30.1 10.1))')
 #' occ(query='Helianthus annuus', from='bison', 
@@ -52,6 +53,8 @@
 #' occ(query='Accipiter striatus', from='gbif', geometry=c(-125.0,38.4,-121.8,40.9))
 #' 
 #' ## Bounding box constraint with ecoengine 
+#' # Use this website: \url{http://boundingbox.klokantech.com/} to quickly grab a bbox.
+#' Just set the format on the bottom left to CSV.
 #' occ(query='Accipiter striatus', from='ecoengine', limit=10, 
 #'    geometry=c(-125.0,38.4,-121.8,40.9))
 #' 
@@ -74,13 +77,13 @@
 #' # Pass in many species names, combine just data to a single data.frame, and
 #' # first six rows
 #' spnames <- c('Accipiter striatus', 'Setophaga caerulescens', 'Spinus tristis')
-#' out <- occ(query = spnames, from = 'gbif', gbifopts = list(georeferenced = TRUE))
+#' out <- occ(query = spnames, from = 'gbif', gbifopts = list(hasCoordinate = TRUE))
 #' df <- occ2df(out)
 #' head(df)
 #' 
-#' 
-#' # taxize integration: Pass in taxonomic identifiers
-#' library(taxize)
+#' # taxize integration
+#' ## You can pass in taxonomic identifiers
+#' library("taxize")
 #' (ids <- get_ids(names=c("Chironomus riparius","Pinus contorta"), db = c('itis','gbif')))
 #' occ(ids = ids[[1]], from='bison')
 #' occ(ids = ids, from=c('bison','gbif'))
@@ -117,7 +120,7 @@ occ <- function(query = NULL, from = "gbif", limit = 25, geometry = NULL, rank =
     ebird_res <- foo_ebird(sources, x, y, ebirdopts)
     ecoengine_res <- foo_ecoengine(sources, x, y, z, ecoengineopts)
     antweb_res <- foo_antweb(sources, x, y, z, antwebopts)
-  list(gbif = gbif_res, bison = bison_res, inat = inat_res, ebird = ebird_res, 
+    list(gbif = gbif_res, bison = bison_res, inat = inat_res, ebird = ebird_res, 
          ecoengine = ecoengine_res, antweb = antweb_res)
   }
   
@@ -218,8 +221,8 @@ foo_gbif <- function(sources, query, limit, geometry, opts) {
     opts$return <- "data"
     out <- do.call(occ_search, opts)
     if (class(out) == "character") {
-      list(time = time, data = data.frame(name = NA, key = NA, longitude = NA, 
-                                          latitude = NA, prov = "gbif"))
+      list(time = time, data = data.frame(name = "", key = NaN, decimalLatitude = NaN, 
+                                          decimalLongitude = NaN, prov = "gbif", stringsAsFactors = FALSE)) 
     } else {
       out$prov <- rep("gbif", nrow(out))
       out$prov <- rep("gbif", nrow(out))
@@ -253,6 +256,8 @@ foo_ecoengine <- function(sources, query, limit, geometry, opts) {
     opts$progress <- FALSE
     out_ee <- do.call(ee_observations, opts)
     out <- out_ee$data
+    fac_tors <- sapply(out, is.factor)
+    out[fac_tors] <- lapply(out[fac_tors], as.character)
     out$prov <- rep("ecoengine", nrow(out))
     names(out)[names(out) == 'scientific_name'] <- "name"
     list(time = time, data = out)
@@ -281,6 +286,7 @@ foo_antweb <- function(sources, query, limit, geometry,  opts) {
 
     opts$georeferenced <- TRUE
     out <- do.call(aw_data, opts)
+    out <- out$data
     out$prov <- rep("antweb", nrow(out))
     out$scientific_name <- opts$scientific_name
     list(time = time, data = out)

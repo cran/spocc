@@ -6,31 +6,29 @@ spocc
 **`spocc` = SPecies OCCurrence data**
 
 
-At rOpenSci, we have been writing R packages to interact with many sources of species occurrence data, including [GBIF][gbif], [Vertnet][vertnet], [BISON][bison], [iNaturalist][inat], the [Berkeley ecoengine][ecoengine], and [AntWeb][antweb]. `spocc` is an R package to query and collect species occurrence data from many sources. The goal is to wrap functions in other R packages to make a seamless experience across data sources for the user. 
+At rOpenSci, we have been writing R packages to interact with many sources of species occurrence data, including [GBIF][gbif], [Vertnet][vertnet], [BISON][bison], [iNaturalist][inat], the [Berkeley ecoengine][ecoengine], and [AntWeb][antweb]. `spocc` is an R package to query and collect species occurrence data from many sources. The goal is to wrap functions in other R packages to make a seamless experience across data sources for the user.
 
 The inspiration for this comes from users requesting a more seamless experience across data sources, and from our work on a similar package for taxonomy data ([taxize][taxize]).
+
+### Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Quick start
 
 ### Install
 
-```coffee
-# Until the package becomes available on CRAN, 
-# install all dependencies separately
-install.packages(c("rbison", "rgbif", "rebird", "AntWeb", "ecoengine", 
-"rinat","plyr", "ggplot2", "maps", "maptools", "sp", "lubridate", 
-"RColorBrewer", "httr", "rgdal", "RJSONIO", "data.table", 
-"assertthat","leafletR"))
-
-# Next install rCharts for interactive maps used in the mapshiny() function
-install.packages("devtools")
-library(devtools)
-install_github("ramnathv/rCharts")
-```
-
 Install `spocc`
 
 ```coffee
+install.packages("spocc", dependencies = TRUE)
+```
+
+Or the development version
+
+```coffee
+install.packages("devtools")
+library(devtools)
 install_github("ropensci/spocc")
 library(spocc)
 ```
@@ -176,7 +174,7 @@ head(occ2df(out)); tail(occ2df(out))
 
 ```coffee
 spp <- c('Danaus plexippus','Accipiter striatus','Pinus contorta')
-dat <- occ(query = spp, from = 'gbif', gbifopts = list(georeferenced=TRUE))
+dat <- occ(query = spp, from = 'gbif', gbifopts = list(hasCoordinate=TRUE))
 data <- occ2df(dat)
 mapleaflet(data = data, dest = ".")
 ```
@@ -188,24 +186,13 @@ mapleaflet(data = data, dest = ".")
 
 ```coffee
 spp <- c('Danaus plexippus','Accipiter striatus','Pinus contorta')
-dat <- occ(query=spp, from='gbif', gbifopts=list(georeferenced=TRUE))
+dat <- occ(query=spp, from='gbif', gbifopts=list(hasCoordinate=TRUE))
 dat <- fixnames(dat)
 dat <- occ2df(dat)
 mapgist(data=dat, color=c("#976AAE","#6B944D","#BD5945"))
 ```
 
 ![](http://f.cl.ly/items/343l2G0A2J3T0n2t433W/Screen%20Shot%202014-02-09%20at%2010.40.57%20PM.png)
-
-
-**Shiny**
-
-This is just a demo, not to pass in your own data. Though a Shiny app is opened in your browser and you can input species names, adjust background map, etc.
-
-```coffee
-mapshiny()
-```
-
-![](http://cl.ly/TojP/Screen%20Shot%202014-02-09%20at%2010.42.59%20PM.png)
 
 
 **ggplot2**
@@ -222,7 +209,7 @@ mapggplot(ecoengine_data)
 
 ```coffee
 spnames <- c('Accipiter striatus', 'Setophaga caerulescens', 'Spinus tristis')
-out <- occ(query=spnames, from='gbif', gbifopts=list(georeferenced=TRUE))
+out <- occ(query=spnames, from='gbif', gbifopts=list(hasCoordinate=TRUE))
 plot(out, cex=1, pch=10)
 ```
 

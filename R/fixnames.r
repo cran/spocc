@@ -19,17 +19,28 @@
 #' @export
 #' @examples \dontrun{
 #' spp <- c('Danaus plexippus','Accipiter striatus','Pinus contorta')
-#' dat <- occ(spp, from='gbif', gbifopts=list(georeferenced=TRUE))
+#' dat <- occ(spp, from='gbif', gbifopts=list(hasCoordinate=TRUE))
 #' fixnames(dat, how="shortest")$gbif
 #' fixnames(dat, how="query")$gbif
 #' fixnames(dat, how="supplied", namevec = c('abc', 'def', 'ghi'))$gbif
+#' 
+#' dat <- occ(spp, from='ecoengine')
+#' ## doesn't changes things
+#' fixnames(dat, how="shortest")$ecoengine$data$Danaus_plexippus
+#' ## this is better
+#' fixnames(dat, how="query")$ecoengine$data$Danaus_plexippus
+#' ## or this
+#' fixnames(dat, how="supplied", 
+#'    namevec = c("Danaus","Accipiter","Pinus"))$ecoengine$data$Danaus_plexippus
 #' }
 
 fixnames <- function(obj, how="shortest", namevec = NULL){
   how <- match.arg(how, choices = c("shortest", "query", "supplied"))
+#   if(getOption("stringsAsFactors")){warning("Strings are coming back as factors, this may interfere with fixing sames,consider setting 'options(stringsAsFactors = FALSE)'")}
   foo <- function(z){
     if(how=="shortest"){ # shortest
       z$data <- lapply(z$data, function(x, how){
+        if(is.factor(x$name)){x$name <- as.character(x$name)}
         uniqnames <- unique(x$name)
         lengths <- vapply(uniqnames, function(y) length(strsplit(y, " ")[[1]]), numeric(1))
         shortest <- names(which.min(lengths))
