@@ -17,7 +17,7 @@
 #' occ(query = 'Bison bison', from = 'bison')$bison
 #' # Data from AntWeb
 #' # By species
-#' (by_species <- occ(query = "acanthognathus brevicornis", from = "antweb"))
+#' (by_species <- occ(query = "linepithema humile", from = "antweb"))
 #' # or by genus
 #' (by_genus <- occ(query = "acanthognathus", from = "antweb"))
 #'
@@ -108,7 +108,6 @@
 #' 
 #' (ids <- get_tsn('Accipiter striatus'))
 #' occ(ids = ids, from='bison')
-#' }
 #' 
 #' # SpatialPolygons/SpatialPolygonsDataFrame integration
 #' library("sp")
@@ -135,6 +134,19 @@
 #' out <- occ(geometry = sppoly_df)
 #' out$gbif$data
 #' 
+#' # curl debugging
+#' library('httr')
+#' occ(query = 'Accipiter striatus', from = 'gbif', callopts=verbose())
+#' occ(query = 'Accipiter striatus', from = 'ebird', callopts=verbose())
+#' occ(query = 'Accipiter striatus', from = 'bison', callopts=verbose())
+#' occ(query = 'Accipiter striatus', from = 'ecoengine', callopts=verbose())
+#' occ(query = 'Accipiter striatus', from = c('ebird','bison'), callopts=verbose())
+#' occ(query = 'Accipiter striatus', from = 'ebird', callopts=timeout(seconds = 0.1))
+#' ## notice that callopts is ignored when from=inat or from=antweb
+#' occ(query = 'Accipiter striatus', from = 'inat', callopts=verbose())
+#' occ(query = 'linepithema humile', from = 'antweb', callopts=verbose())
+#' }
+#' 
 #' @examples \donttest{
 #' #### NOTE: no support for multipolygons yet
 #' ## WKT's are more flexible than bounding box's. You can pass in a WKT with multiple 
@@ -145,8 +157,8 @@
 #'                           (30 10, 10 20, 20 60, 60 60, 30 10))')
 #' }
 occ <- function(query = NULL, from = "gbif", limit = 25, geometry = NULL, rank = "species",
-    type = "sci", ids = NULL, gbifopts = list(), bisonopts = list(), inatopts = list(), 
-    ebirdopts = list(), ecoengineopts = list(), antwebopts = list()) 
+    type = "sci", ids = NULL, callopts=list(), gbifopts = list(), bisonopts = list(), inatopts = list(), 
+    ebirdopts = list(), ecoengineopts = list(), antwebopts = list())
 {  
   if(!is.null(geometry)){
     if(class(geometry) %in% c('SpatialPolygons','SpatialPolygonsDataFrame')){
@@ -155,29 +167,33 @@ occ <- function(query = NULL, from = "gbif", limit = 25, geometry = NULL, rank =
   }
   sources <- match.arg(from, choices = c("gbif", "bison", "inat", "ebird", "ecoengine", "antweb"), 
                        several.ok = TRUE)
-  loopfun <- function(x, y, z) {
-    # x = query; y = limit; z = geometry
-    gbif_res <- foo_gbif(sources, x, y, z, gbifopts)
-    bison_res <- foo_bison(sources, x, y, z, bisonopts)
-    inat_res <- foo_inat(sources, x, y, z, inatopts)
-    ebird_res <- foo_ebird(sources, x, y, ebirdopts)
-    ecoengine_res <- foo_ecoengine(sources, x, y, z, ecoengineopts)
-    antweb_res <- foo_antweb(sources, x, y, z, antwebopts)
+  if(!all(from %in% sources)){
+    stop(sprintf("Woops, the following are not supported or spelled incorrectly: %s", from[!from %in% sources]))
+  }
+  
+  loopfun <- function(x, y, z, w) {
+    # x = query; y = limit; z = geometry; w = callopts
+    gbif_res <- foo_gbif(sources, x, y, z, w, gbifopts)
+    bison_res <- foo_bison(sources, x, y, z, w, bisonopts)
+    inat_res <- foo_inat(sources, x, y, z, w, inatopts)
+    ebird_res <- foo_ebird(sources, x, y, w, ebirdopts)
+    ecoengine_res <- foo_ecoengine(sources, x, y, z, w, ecoengineopts)
+    antweb_res <- foo_antweb(sources, x, y, z, w, antwebopts)
     list(gbif = gbif_res, bison = bison_res, inat = inat_res, ebird = ebird_res, 
          ecoengine = ecoengine_res, antweb = antweb_res)
   }
   
-  loopids <- function(x, y, z) {
+  loopids <- function(x, y, z, w) {
     # x = query; y=limit; z=geometry
 #     classes <- ifelse(length(x)>1, vapply(x, class, ""), class(x))
     classes <- class(x)
     if(!all(classes %in% c("gbifid","tsn")))
       stop("Currently, taxon identifiers have to be of class gbifid or tsn")
     if(class(x) == 'gbifid'){
-      gbif_res <- foo_gbif(sources, x, y, z, gbifopts)
+      gbif_res <- foo_gbif(sources, x, y, z, w, gbifopts)
       bison_res <- list(time = NULL, data = data.frame(NULL))
     } else if(class(x) == 'tsn') {
-      bison_res <- foo_bison(sources, x, y, z, bisonopts)
+      bison_res <- foo_bison(sources, x, y, z, w, bisonopts)
       gbif_res <- list(time = NULL, data = data.frame(NULL))
     }
     list(gbif = gbif_res, 
@@ -195,7 +211,7 @@ occ <- function(query = NULL, from = "gbif", limit = 25, geometry = NULL, rank =
   
   if(is.null(ids) && !is.null(query)){
     # If query not null (taxonomic names passed in)
-    tmp <- lapply(query, loopfun, y=limit, z=geometry)
+    tmp <- lapply(query, loopfun, y=limit, z=geometry, w=callopts)
   } else if(is.null(query) && is.null(geometry)) {
     unlistids <- function(x){
       if(length(x) == 1){
@@ -220,13 +236,13 @@ occ <- function(query = NULL, from = "gbif", limit = 25, geometry = NULL, rank =
     # if ids is not null (taxon identifiers passed in)
     # ids can only be passed to gbif and bison for now
     # so don't pass anything on to ecoengine, inat, or ebird
-    tmp <- lapply(ids, loopids, y=limit, z=geometry)
+    tmp <- lapply(ids, loopids, y=limit, z=geometry, w=callopts)
   } else {
     type <- 'geometry'
     if(is.numeric(geometry)){
-      tmp <- list(loopfun(z=geometry, y=limit, x=query))
+      tmp <- list(loopfun(z=geometry, y=limit, x=query, w=callopts))
     } else if(is.list(geometry)){
-      tmp <- lapply(geometry, function(b) loopfun(z=b, y=limit, x=query))
+      tmp <- lapply(geometry, function(b) loopfun(z=b, y=limit, x=query, w=callopts))
     }
   }
   
@@ -267,12 +283,16 @@ occ <- function(query = NULL, from = "gbif", limit = 25, geometry = NULL, rank =
     }
 
     if (any(grepl(srce, sources))) {
-      list(meta = list(source = srce, time = tmp[[1]][[srce]]$time,
+      ggg <- list(meta = list(source = srce, time = tmp[[1]][[srce]]$time,
           found = tmp[[1]][[srce]]$found, returned = nrow(tmp[[1]][[srce]]$data), 
           type = type, opts = optstmp), data = tt)
+      class(ggg) <- "occdatind"
+      ggg
     } else {
-      list(meta = list(source = srce, time = NULL, found = NULL, returned = NULL, 
+      ggg <- list(meta = list(source = srce, time = NULL, found = NULL, returned = NULL, 
           type = NULL, opts = NULL), data = tt)
+      class(ggg) <- "occdatind"
+      ggg
     }
   }
   gbif_sp <- getsplist("gbif", gbifopts)
@@ -285,226 +305,4 @@ occ <- function(query = NULL, from = "gbif", limit = 25, geometry = NULL, rank =
             ecoengine = ecoengine_sp, antweb = antweb_sp)
   class(p) <- "occdat"
   return(p)
-}
-
-# Plugins for the occ function for each data source
-#' @noRd
-foo_gbif <- function(sources, query, limit, geometry, opts) {
-  if (any(grepl("gbif", sources))) {
-    
-    if(!is.null(query)){
-      if(class(query) %in% c("ids","gbifid")){
-        if(class(query) %in% "ids"){
-          opts$taxonKey <- query$gbif
-        } else {
-          opts$taxonKey <- query
-        }
-        UsageKey <- opts$taxonKey
-      } else
-      { 
-        UsageKey <- name_backbone(name = query)$usageKey 
-        if(is.null(UsageKey)){
-          warning(sprintf("No GBIF key found for %s", query))
-        } else {
-          opts$taxonKey <- UsageKey
-        }
-      }
-    } else { UsageKey <- NULL }
-    
-    if(is.null(UsageKey) && is.null(geometry)){ 
-      list(time = NULL, found = NULL, data = data.frame(NULL), opts=opts) 
-    } else{
-      time <- now()
-      opts$limit <- limit
-      if(!is.null(geometry)){
-        opts$geometry <- if(grepl('POLYGON', paste(as.character(geometry), collapse=" "))){ 
-          geometry } else { bbox2wkt(bbox=geometry) }
-      }
-#       opts$return <- "data"
-      out <- do.call(occ_search, opts)
-      if(class(out) == "character") {
-        list(time = time, found = NULL, data = data.frame(NULL), opts = opts)
-      } else {
-        if(class(out$data) == "character"){
-          list(time = time, found = NULL, data = data.frame(NULL), opts = opts)
-        } else {
-          dat <- out$data
-          dat$prov <- rep("gbif", nrow(dat))
-          dat$prov <- rep("gbif", nrow(dat))
-          dat$name <- as.character(dat$name)
-          list(time = time, found = out$meta$count, data = dat, opts = opts)
-        }
-      }
-    }
-  } else {
-    list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-  }
-}
-
-#' @noRd
-foo_ecoengine <- function(sources, query, limit, geometry, opts) {
-  if (any(grepl("ecoengine", sources))) {
-    time <- now()
-    opts$scientific_name <- query
-    opts$georeferenced <- TRUE
-    opts$page_size <- limit
-    if(!is.null(geometry)){
-      opts$bbox <- if(grepl('POLYGON', paste(as.character(geometry), collapse=" "))){ 
-        wkt2bbox(geometry) } else { geometry }
-    }
-    # This could hang things if request is super large.  Will deal with this issue
-    # when it arises in a usecase
-    # For now default behavior is to retrive one page.
-    # page = "all" will retrieve all pages.
-    if (is.null(opts$page)) {
-      opts$page <- 1
-    }
-    opts$quiet <- TRUE
-    opts$progress <- FALSE
-    out_ee <- do.call(ee_observations, opts)
-    if(out_ee$results == 0){
-      warning(sprintf("No records found in Ecoengine for %s", query))
-      list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-    } else{
-      out <- out_ee$data
-      fac_tors <- sapply(out, is.factor)
-      out[fac_tors] <- lapply(out[fac_tors], as.character)
-      out$prov <- rep("ecoengine", nrow(out))
-      names(out)[names(out) == 'scientific_name'] <- "name"
-      list(time = time, found = out_ee$results, data = out, opts = opts)
-    }
-  } else {
-    list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-  }
-}
-
-
-#' @noRd
-foo_antweb <- function(sources, query, limit, geometry,  opts) {
-  if (any(grepl("antweb", sources))) {
-    time <- now()
-#     limit <- NULL
-    geometry <- NULL
-
-    query <- sub("^ +", "", query)
-    query <- sub(" +$", "", query)
-    
-    if(length(strsplit(query, " ")[[1]]) == 2) {
-      opts$scientific_name <- query
-    } else {
-      opts$genus <- query
-      opts$scientific_name <- NULL
-    }
-
-    opts$limit <- limit
-    opts$georeferenced <- TRUE
-    out <- do.call(aw_data, opts)
-
-    if(is.null(out)){
-      warning(sprintf("No records found in AntWeb for %s", query))
-      list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-    } else{
-      res <- out$data
-      res$prov <- rep("antweb", nrow(res))
-      res$scientific_name <- opts$scientific_name
-      list(time = time, found = out$count, data = res, opts = opts)
-    }
-  } else {
-    list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-  }
-}
-
-
-
-
-#' @noRd
-foo_bison <- function(sources, query, limit, geometry, opts) {
-  if(any(grepl("bison", sources))) {
-    if(class(query) %in% c("ids","tsn")){
-      if(class(query) %in% "ids"){
-        opts$tsn <- query$itis
-      } else
-      {
-        opts$tsn <- query
-      }
-    } else
-    { opts$species <- query }
-    
-    time <- now()
-    opts$count <- limit
-#     opts$what <- 'points'
-    if(!is.null(geometry)){
-      opts$aoi <- if(grepl('POLYGON', paste(as.character(geometry), collapse=" "))){ 
-        geometry } else { bbox2wkt(bbox=geometry) }
-    }
-    out <- do.call(bison, opts)
-    if(is.null(out$points)){
-      list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-    } else{
-      dat <- out$points
-      dat$prov <- rep("bison", nrow(dat))
-      list(time = time, found = out$summary$total, data = dat, opts = opts)
-    }
-  } else {
-    list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-  }
-}
-
-
-
-#' @noRd
-foo_inat <- function(sources, query, limit, geometry, opts) {
-  if (any(grepl("inat", sources))) {
-    time <- now()
-    opts$query <- query
-    opts$maxresults <- limit
-    opts$meta <- TRUE
-    if(!is.null(geometry)){
-      opts$bounds <- if(grepl('POLYGON', paste(as.character(geometry), collapse=" ")))
-      { 
-        # flip lat and long spots in the bounds vector for inat
-        temp <- wkt2bbox(geometry)
-        c(temp[2], temp[1], temp[4], temp[3])
-      } else { c(geometry[2], geometry[1], geometry[4], geometry[3]) }
-    }
-    out <- do.call(get_inat_obs, opts)
-    if(!is.data.frame(out$data)){
-      list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-    } else{
-      res <- out$data
-      res$prov <- rep("inat", nrow(res))
-      names(res)[names(res) == 'Scientific.name'] <- "name"
-      list(time = time, found = out$meta$found, data = res, opts = opts)
-    }
-  } else {
-    list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-  }
-}
-
-#' @noRd
-foo_ebird <- function(sources, query, limit, opts) {
-  if (any(grepl("ebird", sources))) {
-    time <- now()
-    if (is.null(opts$method)) 
-      opts$method <- "ebirdregion"
-    if (!opts$method %in% c("ebirdregion", "ebirdgeo")) 
-      stop("ebird method must be one of ebirdregion or ebirdgeo")
-    opts$species <- query
-    opts$max <- limit
-    if (opts$method == "ebirdregion") {
-      if (is.null(opts$region)) opts$region <- "US"
-      out <- do.call(ebirdregion, opts[!names(opts) %in% "method"])
-    } else {
-      out <- do.call(ebirdgeo, opts[!names(opts) %in% "method"])
-    }
-    if(!is.data.frame(out)){
-      list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-    } else{
-      out$prov <- rep("ebird", nrow(out))
-      names(out)[names(out) == 'sciName'] <- "name"
-      list(time = time, found = NULL, data = out, opts = opts)
-    }
-  } else {
-    list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
-  }
 }
