@@ -10,11 +10,16 @@
 #' @export
 #' @examples \dontrun{
 #' # Single data sources
-#' occ(query = 'Accipiter striatus', from = 'gbif')$gbif
-#' occ(query = 'Accipiter striatus', from = 'ecoengine')$ecoengine
-#' occ(query = 'Accipiter striatus', from = 'ebird')$ebird
-#' occ(query = 'Danaus plexippus', from = 'inat')$inat
-#' occ(query = 'Bison bison', from = 'bison')$bison
+#' (res <- occ(query = 'Accipiter striatus', from = 'gbif', limit = 50))
+#' res$gbif
+#' (res <- occ(query = 'Accipiter striatus', from = 'ecoengine', limit = 50))
+#' res$ecoengine
+#' (res <- occ(query = 'Accipiter striatus', from = 'ebird', limit = 50))
+#' res$ebird
+#' (res <- occ(query = 'Danaus plexippus', from = 'inat', limit = 50))
+#' res$inat
+#' (res <- occ(query = 'Bison bison', from = 'bison', limit = 50))
+#' res$bison
 #' # Data from AntWeb
 #' # By species
 #' (by_species <- occ(query = "linepithema humile", from = "antweb"))
@@ -24,9 +29,18 @@
 #' occ(query = 'Setophaga caerulescens', from = 'ebird', ebirdopts = list(region='US'))
 #' occ(query = 'Spinus tristis', from = 'ebird', ebirdopts = 
 #'    list(method = 'ebirdgeo', lat = 42, lng = -76, dist = 50))
+#'    
+#' # You can pass on limit param to all sources even though its a different param in that source
+#' ## ecoengine example
+#' res <- occ(query = 'Accipiter striatus', from = 'ecoengine', ecoengineopts=list(limit = 5))
+#' res$ecoengine
+#' ## This is particularly useful when you want to set different limit for each source
+#' res <- occ(query = 'Accipiter striatus', from = c('gbif','ecoengine'), 
+#'    gbifopts=list(limit = 10), ecoengineopts=list(limit = 5))
+#' res
 #'
 #' # Many data sources
-#' out <- occ(query = 'Pinus contorta', from=c('gbif','inat'))
+#' (out <- occ(query = 'Pinus contorta', from=c('gbif','bison')))
 #' 
 #' ## Select individual elements
 #' out$gbif
@@ -43,7 +57,7 @@
 #' ## Pass in geometry parameter to all sources. This constraints the search to the 
 #' ## specified polygon for all sources, gbif and bison in this example.
 #' ## Check out \url{http://arthur-e.github.io/Wicket/sandbox-gmaps3.html} to get a WKT string
-#' occ(query='Accipiter striatus', from='gbif', 
+#' occ(query='Accipiter', from='gbif', 
 #'    geometry='POLYGON((30.1 10.1, 10 20, 20 60, 60 60, 30.1 10.1))')
 #' occ(query='Helianthus annuus', from='bison', 
 #'    geometry='POLYGON((-111.06 38.84, -110.80 39.37, -110.20 39.17, -110.20 38.90, 
@@ -156,9 +170,9 @@
 #'    geometry='MULTIPOLYGON((30 10, 10 20, 20 60, 60 60, 30 10), 
 #'                           (30 10, 10 20, 20 60, 60 60, 30 10))')
 #' }
-occ <- function(query = NULL, from = "gbif", limit = 25, geometry = NULL, rank = "species",
-    type = "sci", ids = NULL, callopts=list(), gbifopts = list(), bisonopts = list(), inatopts = list(), 
-    ebirdopts = list(), ecoengineopts = list(), antwebopts = list())
+occ <- function(query = NULL, from = "gbif", limit = 500, geometry = NULL, rank = "species",
+    type = "sci", ids = NULL, callopts=list(), gbifopts = list(), bisonopts = list(), 
+    inatopts = list(), ebirdopts = list(), ecoengineopts = list(), antwebopts = list())
 {  
   if(!is.null(geometry)){
     if(class(geometry) %in% c('SpatialPolygons','SpatialPolygonsDataFrame')){

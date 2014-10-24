@@ -23,6 +23,7 @@ spocc_capwords <- function(s, strict = FALSE, onlyfirst = FALSE) {
             2)), sep = "", collapse = " "), "", USE.NAMES = F)
     }
 }
+
 #' Code based on the `gbifxmlToDataFrame` function from dismo package
 #' (http://cran.r-project.org/web/packages/dismo/index.html),
 #' by Robert Hijmans, 2012-05-31, License: GPL v3
@@ -65,6 +66,7 @@ spocc_gbifxmlToDataFrame <- function(doc, format) {
     }
     cbind(tax, ans)
 }
+
 #' Coerces data.frame columns to the specified classes
 #'
 #' @param d A data.frame.
@@ -85,44 +87,7 @@ spocc_colClasses <- function(d, colClasses) {
         as(d[[i]], colClasses[i])))
     d
 }
-#' Convert commas to periods in lat/long data
-#'
-#' @param dataframe A data.frame
-#' @export
-#' @keywords internal
-spocc_commas_to_periods <- function(dataframe) {
-    dataframe$decimalLatitude <- gsub("\\,", ".", dataframe$decimalLatitude)
-    dataframe$decimalLongitude <- gsub("\\,", ".", dataframe$decimalLongitude)
-    return(dataframe)
-}
-#' Parse results from call to occurrencelist endpoint
-#'
-#' @param x A list
-#' @param ... Further args passed on to gbifxmlToDataFrame
-#' @param removeZeros remove zeros or not
-#' @export
-#' @keywords internal
-spocc_parseresults <- function(x, ..., removeZeros = removeZeros) {
-    df <- gbifxmlToDataFrame(x, ...)
-    if (nrow(df[!is.na(df$decimalLatitude), ]) == 0) {
-        return(df)
-    } else {
-        df <- commas_to_periods(df)
-        df_num <- df[!is.na(df$decimalLatitude), ]
-        df_nas <- df[is.na(df$decimalLatitude), ]
-        df_num$decimalLongitude <- as.numeric(df_num$decimalLongitude)
-        df_num$decimalLatitude <- as.numeric(df_num$decimalLatitude)
-        i <- df_num$decimalLongitude == 0 & df_num$decimalLatitude == 0
-        if (removeZeros) {
-            df_num <- df_num[!i, ]
-        } else {
-            df_num[i, "decimalLatitude"] <- NA
-            df_num[i, "decimalLongitude"] <- NA
-        }
-        temp <- rbind(df_num, df_nas)
-        return(temp)
-    }
-}
+
 #' Custom ggplot2 theme
 #' @import ggplot2 grid
 #' @export
@@ -134,7 +99,9 @@ spocc_blanktheme <- function() {
         panel.grid.minor = element_blank(), plot.background = element_blank(), plot.margin = rep(unit(0,
             "null"), 4))
 }
+
 #' Combine results from occ calls to a single data.frame
+#' @importFrom plyr rbind.fill
 #' @param obj Input from occ
 #' @param what One of data (default) or all (with metadata)
 #' @export
@@ -145,25 +112,30 @@ spocc_blanktheme <- function() {
 #' }
 occ2df <- function(obj, what = "data") {
     what <- match.arg(what, choices = c("all", "data"))
-    foolist <- function(x) data.frame(rbindlist(x$data), stringsAsFactors = FALSE)
+#     foolist <- function(x) data.frame(rbindlist(x$data), stringsAsFactors = FALSE)
+    foolist <- function(x) do.call(rbind.fill, x$data)
     aa <- foolist(obj$gbif)
     bb <- foolist(obj$bison)
     cc <- foolist(obj$inat)
     dd <- foolist(obj$ebird)
     ee <- foolist(obj$ecoengine)
     aw <- foolist(obj$antweb)
-    tmp <- data.frame(rbindlist(list(
-      data.frame(name = aa$name, longitude = aa$decimalLongitude, latitude = aa$decimalLatitude, prov = aa$prov),
-      data.frame(name = bb$name, longitude = bb$decimalLongitude, latitude = bb$decimalLatitude, prov = bb$prov),
-      data.frame(name = cc$name, longitude = cc$Longitude, latitude = cc$Latitude, prov = cc$prov),
-      data.frame(name = dd$name, longitude = dd$lng, latitude = dd$lat, prov = dd$prov),
-      data.frame(name = ee$name, longitude = ee$longitude, latitude = ee$latitude, prov = ee$prov),
-      data.frame(name = aw$name, longitude = aw$decimal_longitude, latitude = aw$decimal_latitude, prov = aw$prov))))
+    tmp <- data.frame(rbindlist(
+      lapply(list(aa, bb, cc, dd, ee, aw), function(x){
+        if(NROW(x) == 0) data.frame(NULL) else x[ , c('name','longitude','latitude','prov') ]
+      })
+    ))
     tmpout <- list(meta = list(obj$gbif$meta, obj$bison$meta, obj$inat$meta, obj$ebird$meta,
         obj$ecoengine$meta, obj$aw$meta), data = tmp)
-    if (what %in% "data")
-        tmpout$data else tmpout
+    if(what %in% "data") tmpout$data else tmpout
+#       data.frame(name = aa$name, longitude = aa$decimalLongitude, latitude = aa$decimalLatitude, prov = aa$prov),
+#       data.frame(name = bb$name, longitude = bb$decimalLongitude, latitude = bb$decimalLatitude, prov = bb$prov),
+#       data.frame(name = cc$name, longitude = cc$Longitude, latitude = cc$Latitude, prov = cc$prov),
+#       data.frame(name = dd$name, longitude = dd$lng, latitude = dd$lat, prov = dd$prov),
+#       data.frame(name = ee$name, longitude = ee$longitude, latitude = ee$latitude, prov = ee$prov),
+#       data.frame(name = aw$name, longitude = aw$decimal_longitude, latitude = aw$decimal_latitude, prov = aw$prov))))
 }
+
 #' Occ output or data.frame to sp SpatialPointsDataFrame class
 #'
 #' @import sp assertthat
@@ -176,7 +148,7 @@ occ2df <- function(obj, what = "data") {
 #' @export
 #' @examples \dontrun{
 #' spnames <- c('Accipiter striatus', 'Setophaga caerulescens', 'Spinus tristis')
-#' out <- occ(query=spnames, from='gbif', gbifopts=list(hasCoordinate=TRUE))
+#' out <- occ(query=spnames, from='gbif', limit=25, gbifopts=list(hasCoordinate=TRUE))
 #'
 #' # pass in output of occ directly to occ2sp
 #' occ2sp(out)
@@ -191,6 +163,8 @@ occ2sp <- function(input) {
     dat <- switch(class(input), occdat = occ2df(input), data.frame = input)
     # check column names
     assert_that(all(c("latitude", "longitude") %in% names(dat)))
+    # remove NA rows
+    dat <- dat[complete.cases(dat),]
     # convert to SpatialPointsDataFrame object
     coordinates(dat) <- c("latitude", "longitude")
     return(dat)
@@ -369,4 +343,128 @@ spocc_obj_type <- function (x)
   else {
     paste0("<S4:", paste0(is(x), collapse = ", "), ">")
   }
+}
+
+
+spocc_compact <- function (l) Filter(Negate(is.null), l)
+
+spocc_inat_obs <- function(query=NULL,taxon = NULL,quality=NULL,geo=NULL,year=NULL,month=NULL,day=NULL,bounds=NULL,maxresults=100,meta=FALSE)
+{  
+  
+  ## Parsing and error-handling of input strings
+  search <- ""
+  if(!is.null(query)){
+    search <- paste(search,"&q=",gsub(" ","+",query),sep="")
+  }
+  
+  if(!is.null(quality)){
+    if(!sum(grepl(quality,c("casual","research")))){
+      stop("Please enter a valid quality flag,'casual' or 'research'.")
+    }
+    
+    search <- paste(search,"&quality_grade=",quality,sep="")
+  }
+  
+  if(!is.null(taxon)){
+    search <-  paste(search,"&taxon_name=",gsub(" ","+",taxon),sep="")
+  }
+  
+  if(!is.null(geo) && geo){
+    search <- paste(search,"&has[]=geo",sep="")
+  }
+  
+  if(!is.null(year)){
+    if(length(year) > 1){
+      stop("you can only filter results by one year, please enter only one value for year")
+    }
+    search <- paste(search,"&year=",year,sep="")
+  }
+  
+  if(!is.null(month)){
+    month <- as.numeric(month)
+    if(is.na(month)){
+      stop("please enter a month as a number between 1 and 12, not as a word ")
+    }
+    if(length(month) > 1){
+      stop("you can only filter results by one month, please enter only one value for month")
+    }
+    if(month < 1 || month > 12){ stop("Please enter a valid month between 1 and 12")}
+    search <- paste(search,"&month=",month,sep="")
+  }
+  
+  if(!is.null(day)){
+    day <- as.numeric(day)
+    if(is.na(day)){
+      stop("please enter a day as a number between 1 and 31, not as a word ")
+    }
+    if(length(day) > 1){
+      stop("you can only filter results by one day, please enter only one value for day")
+    }
+    if(day < 1 || day > 31){ stop("Please enter a valid day between 1 and 31")}
+    
+    search <- paste(search,"&day=",day,sep="")
+  }
+  
+  if(!is.null(bounds)){
+    if(length(bounds) != 4){stop("bounding box specifications must have 4 coordinates")}
+    search <- paste(search,"&swlat=",bounds[1],"&swlng=",bounds[2],"&nelat=",bounds[3],"&nelng=",bounds[4],sep="")
+    
+  }
+  
+  base_url <- "http://www.inaturalist.org/"
+  q_path <- "observations.csv"
+  ping_path <- "observations.json"
+  ping_query <- paste(search,"&per_page=1&page=1",sep="")
+  ### Make the first ping to the server to get the number of results
+  ### easier to pull down if you make the query in json, but easier to arrange results
+  ### that come down in CSV format
+  ping <-  GET(base_url, path = ping_path, query = ping_query)
+  total_res <- as.numeric(ping$headers$`x-total-entries`)
+  
+  if(total_res == 0){
+    stop("Your search returned zero results.  Either your species of interest has no records or you entered an invalid search")
+  }
+  
+  page_query <- paste(search,"&per_page=200&page=1",sep="")
+  data <-  GET(base_url, path = q_path, query = page_query)
+  data <- spocc_inat_handle(data)
+  data_out <- if(is.na(data)) NA else read.csv(textConnection(data), stringsAsFactors = FALSE)
+  
+  if(total_res < maxresults) maxresults <- total_res
+  if(maxresults > 200){
+    for(i in 2:ceiling(maxresults/200)){
+      page_query <- paste(search,"&per_page=200&page=",i,sep="")
+      data <-  GET(base_url,path = q_path, query = page_query)
+      data <- spocc_inat_handle(data)
+      data_out <- rbind(data_out, read.csv(textConnection(data), stringsAsFactors = FALSE))
+    }
+  }
+  
+  if(is.data.frame(data_out)){
+    if(maxresults < dim(data_out)[1]){
+      data_out <- data_out[1:maxresults,]
+    }
+  }
+  
+  if(meta){ 
+    return(list(meta=list(found=total_res, returned=nrow(data_out)), data=data_out)) 
+  } else { return(data_out) }
+}
+
+spocc_inat_handle <- function(x){
+  res <- content(x, as = "text")
+  if(!x$headers$`content-type` == 'text/csv; charset=utf-8' || x$status_code > 202 || nchar(res)==0 ){
+    if(!x$headers$`content-type` == 'text/csv; charset=utf-8'){
+      warning("Conent type incorrect, should be 'text/csv; charset=utf-8'")
+      NA
+    }
+    if(x$status_code > 202){
+      warning(sprintf("Error: HTTP Status %s", data$status_code))
+      NA
+    }
+    if(nchar(res)==0){
+      warning("No data found")
+      NA
+    }
+  } else { res }
 }
