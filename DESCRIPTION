@@ -1,11 +1,13 @@
 Package: spocc
-Title: R Interface to Many Species Occurrence Data Sources.
+Title: R Interface to Species Occurrence Data Sources
 Description: A programmatic interface to many species occurrence data sources,
     including GBIF, USGS's BISON, iNaturalist, Berkeley Ecoinformatics Engine
-    eBird, AntWeb, and more as they sources become easily available.
-Version: 0.2.2
+    eBird, AntWeb, and more as sources become easily available. This package 
+    includes functionality for retrieving species occurrence data, combining 
+    that data, and creating various kinds of static and interactive maps. 
+Version: 0.2.4
 License: MIT + file LICENSE
-Date: 2014-10-23
+Date: 2015-01-21
 Authors@R: c(person("Scott", "Chamberlain", role = c("aut", "cre"),
     email = "myrmecocystus@gmail.com"),
     person("Karthik", "Ram", role = "aut",
@@ -17,17 +19,16 @@ BugReports: https://github.com/ropensci/spocc/issues
 LazyData: true
 VignetteBuilder: knitr
 Depends: ggplot2
-Imports: rgbif, rinat (>= 0.1.4), rbison (>= 0.3.2), ecoengine (>=
-        1.4), rebird (>= 0.1.1), AntWeb (>= 0.6.1), plyr, ggmap,
-        maptools, rworldmap, sp, rgeos, lubridate, RColorBrewer, httr,
-        XML, rgdal, RJSONIO, leafletR (>= 0.2-0), data.table,
-        assertthat, whisker
+Imports: rgbif (>= 0.7.7), rinat (>= 0.1.4), rbison (>= 0.3.2),
+        ecoengine (>= 1.4), rebird (>= 0.1.1), AntWeb (>= 0.6.1),
+        ggmap, maptools, rworldmap, sp, rgeos, lubridate, RColorBrewer,
+        httr, rgdal, leafletR (>= 0.2-0), whisker, gistr
 Suggests: roxygen2, testthat, knitr, taxize
-Packaged: 2014-10-24 01:02:16 UTC; sacmac
+Packaged: 2015-01-22 00:27:19 UTC; sacmac
 Author: Scott Chamberlain [aut, cre],
   Karthik Ram [aut],
   Ted Hart [aut]
 Maintainer: Scott Chamberlain <myrmecocystus@gmail.com>
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-10-24 07:49:06
+Date/Publication: 2015-01-22 09:24:23
