@@ -3,14 +3,14 @@
 #' @export
 #' 
 #' @param query (character) One to many names. Either a scientific name or a common name.
-#' Specify whether a scientific or common name in the type parameter.
 #' Only scientific names supported right now.
 #' @param from (character) Data source to get data from, any combination of gbif, bison, or
 #' ecoengine.
 #' @param limit (numeric) Number of records to return. This is passed across all sources.
 #' To specify different limits for each source, use the options for each source (gbifopts, 
 #' bisonopts, ecoengineopts). See Details for more. This parameter is ignored for ecoengine.
-#' @param rank (character) Taxonomic rank. Not used right now.
+#' @param rank (character) Taxonomic rank to limit search space. Used in GBIF, but not 
+#' used in BISON.
 #' @param callopts Options passed on to \code{\link[httr]{GET}}, e.g., for debugging curl calls, 
 #' setting timeouts, etc.
 #' @param gbifopts (list) List of named options to pass on to \code{\link[rgbif]{name_lookup}}. See
@@ -20,8 +20,13 @@
 #' @param ecoengineopts (list) List of named options to pass on to 
 #' \code{\link[ecoengine]{ee_search}}. See also \code{\link[spocc]{occ_names_options}}.
 #' 
-#' @details Not all 6 data sources available from the \code{\link{occ}} function are available here,
-#' as not all of those sources have functionality to search for names. 
+#' @details Not all 7 data sources available from the \code{\link{occ}} function are 
+#' available here, as not all of those sources have functionality to search for names. 
+#' 
+#' We strongly encourage you to use the \code{taxize} package if you want to search for
+#' taxonomic or common names, convert common to scientific names, etc. That package 
+#' was built exactly for that purpose, and we only provide a bit of name searching here 
+#' in this function. 
 #' 
 #' @examples \dontrun{
 #' # Single data sources
@@ -39,16 +44,16 @@
 #' }
 
 occ_names <- function(query = NULL, from = "gbif", limit = 100, rank = "species",
-  callopts=list(), gbifopts = list(), bisonopts = list(), ecoengineopts = list())
-{ 
+  callopts=list(), gbifopts = list(), bisonopts = list(), ecoengineopts = list()) {
+  
   sources <- match.arg(from, choices = c("gbif", "bison", "ecoengine"), several.ok = TRUE)
-  tmp <- lapply(query, loopfun, y=limit, w=callopts, src=sources, op=list(
-    gbi=gbifopts, bis=bisonopts, eco=ecoengineopts)
+  tmp <- lapply(query, loopfun, y = limit, w = callopts, src = sources, op = list(
+    gbi = gbifopts, bis = bisonopts, eco = ecoengineopts)
   )  
   gbif_sp <- getnameslist(tmp, "gbif", sources, query, gbifopts)
   bison_sp <- getnameslist(tmp, "bison", sources, query, bisonopts)
   ecoengine_sp <- getnameslist(tmp, "ecoengine", sources, query, ecoengineopts)
-  structure(list(gbif = gbif_sp, bison = bison_sp, ecoengine = ecoengine_sp), class="occnames")
+  structure(list(gbif = gbif_sp, bison = bison_sp, ecoengine = ecoengine_sp), class = "occnames")
 }
 
 loopfun <- function(x, y, w, op, src) {
@@ -67,10 +72,10 @@ getnameslist <- function(tmp, srce, sources, q, opts) {
   if (any(grepl(srce, sources))) {
     structure(list(meta = list(source = srce, time = tmp[[1]][[srce]]$time,
         found = tmp[[1]][[srce]]$found, returned = nrow(tmp[[1]][[srce]]$data), 
-          opts = optstmp), data = tt), class="occnamesind")
+          opts = optstmp), data = tt), class = "occnamesind")
   } else {
     structure(list(meta = list(source = srce, time = NULL, found = NULL, returned = NULL, 
-          opts = NULL), data = tt), class="occnamesind")
+          opts = NULL), data = tt), class = "occnamesind")
   }
 }
 
@@ -91,53 +96,71 @@ print.occnames <- function(x, ...) {
 #' @noRd
 names_gbif <- function(sources, query, limit, callopts, opts){
   if (any(grepl("gbif", sources))) {
-    if(is.null(query)){ emptylist(opts) } else {
+    if (is.null(query)) { 
+      emptylist(opts) 
+    } else {
       time <- now()
       opts$query <- query
-      if(!'limit' %in% names(opts)) opts$limit <- limit
+      if (!'limit' %in% names(opts)) opts$limit <- limit
       opts$callopts <- callopts
       out <- do.call(name_lookup, opts)
-      if(class(out) == "character"|| class(out$data) == "character") { emptylist(opts) } else {
+      if (class(out) == "character" || class(out$data) == "character") { 
+        emptylist(opts) 
+      } else {
         dat <- out$data
         dat$prov <- rep("gbif", nrow(dat))
         list(time = time, found = out$meta$count, data = dat, opts = opts)
       }
     }
-  } else { emptylist(opts) }
+  } else {
+    emptylist(opts)
+  }
 }
 
 #' @noRd
 names_bison <- function(sources, query, limit, callopts, opts){
   if (any(grepl("bison", sources))) {
-    if(is.null(query)){ emptylist(opts) } else {
+    if (is.null(query)) { 
+      emptylist(opts) 
+    } else {
       time <- now()
       opts$query <- query
-      if(!'limit' %in% names(opts)) opts$rows <- limit
+      if (!'limit' %in% names(opts)) opts$rows <- limit
       opts$callopts <- callopts
       out <- do.call(bison_tax, opts)
-      if(class(out) == "character"|| class(out$data) == "character") { emptylist(opts) } else {
+      if (class(out) == "character" || class(out$data) == "character") { 
+        emptylist(opts) 
+      } else {
         dat <- out$names
         dat$prov <- rep("bison", nrow(dat))
         list(time = time, found = out$numFound, data = dat, opts = opts)
       }
     }
-  } else { emptylist(opts) }
+  } else { 
+    emptylist(opts) 
+  }
 }
 
 #' @noRd
 names_ecoengine <- function(sources, query, limit, callopts, opts){
   if (any(grepl("ecoengine", sources))) {
-    if(is.null(query)){ emptylist(opts) } else {
+    if (is.null(query)) { 
+      emptylist(opts)
+    } else {
       time <- now()
       opts$query <- query
       opts$foptions <- callopts
       out <- do.call(ee_search, opts)
-      if(class(out) == "character") { emptylist(opts) } else {
+      if (class(out) == "character") { 
+        emptylist(opts) 
+      } else {
         out$prov <- rep("ecoengine", nrow(out))
         list(time = time, found = NROW(out), data = out, opts = opts)
       }
     }
-  } else { emptylist(opts) }
+  } else { 
+    emptylist(opts) 
+  }
 }
 
 emptylist <- function(x) list(time = NULL, found = NULL, data = data.frame(NULL), opts = x)
