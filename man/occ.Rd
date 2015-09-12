@@ -7,12 +7,12 @@
 occ(query = NULL, from = "gbif", limit = 500, geometry = NULL,
   has_coords = NULL, ids = NULL, callopts = list(), gbifopts = list(),
   bisonopts = list(), inatopts = list(), ebirdopts = list(),
-  ecoengineopts = list(), antwebopts = list(), vertnetopts = list())
+  ecoengineopts = list(), antwebopts = list(), vertnetopts = list(),
+  idigbioopts = list())
 }
 \arguments{
-\item{query}{(character) One to many names. Either a scientific name or a common name.
-Specify whether a scientific or common name in the type parameter.
-Only scientific names supported right now.}
+\item{query}{(character) One to many scientific names. See Details for what parameter
+in each data source we query.}
 
 \item{from}{(character) Data source to get data from, any combination of gbif, bison,
 inat, ebird, ecoengine and/or vertnet}
@@ -34,7 +34,7 @@ bounding box is [min-longitude, min-latitude, max-longitude, max-latitude]. Geom
 is not possible with vertnet right now, but should be soon.}
 
 \item{has_coords}{(logical) Only return occurrences that have lat/long data. This works
-for gbif, ecoengine, antweb, rinat, and vertnet, but is ignored for ebird and
+for gbif, ecoengine, antweb, rinat, idigbio, and vertnet, but is ignored for ebird and
 bison data sources. You can easily though remove records without lat/long data.}
 
 \item{ids}{Taxonomic identifiers. This can be a list of length 1 to many. See examples for
@@ -64,6 +64,9 @@ See also \code{\link{occ_options}}.}
 
 \item{vertnetopts}{(list) List of named options to pass on to
 \code{\link[rvertnet]{searchbyterm}}. See also \code{\link{occ_options}}..}
+
+\item{idigbioopts}{(list) List of named options to pass on to
+\code{\link[ridigbio]{idig_search_records}}. See also \code{\link{occ_options}}.}
 }
 \description{
 Search on a single species name, or many. And search across a single
@@ -71,12 +74,12 @@ or many data sources.
 }
 \details{
 The \code{occ} function is an opinionated wrapper
-around the rgbif, rbison, rinat, rebird, AntWeb, ecoengine, and rvertnet
-packages to allow data access from a single access point. We take care
-of making sure you get useful
-objects out at the cost of flexibility/options - although you can still set
-options for each of the packages via the gbifopts, bisonopts, inatopts,
-ebirdopts, ecoengineopts, vertnetopts, and antwebopts parameters.
+around the rgbif, rbison, rinat, rebird, AntWeb, ecoengine, rvertnet and
+ridigbio packages to allow data access from a single access point. We take
+care of making sure you get useful objects out at the cost of
+flexibility/options - although you can still set options for each of the
+packages via the gbifopts, bisonopts, inatopts, ebirdopts, ecoengineopts,
+vertnetopts, antwebopts and idigbioopts parameters.
 
 All inputs to \code{occ} are one of:
 \itemize{
@@ -86,6 +89,40 @@ All inputs to \code{occ} are one of:
 }
 To search by common name, first use \code{\link{occ_names}} to find scientic names or
 taxonomic IDs, then feed those to this function.
+
+When you use the \code{query} parameter, we pass your search terms on to parameters
+within functions that query data sources you specify. Those parameters are:
+\itemize{
+ \item rgbif - \code{scientificName} in the \code{\link[rgbif]{occ_search}} function - API
+ parameter: same as the \code{occ} parameter
+ \item rebird - \code{species} in the \code{\link[rebird]{ebirdregion}} or
+ \code{\link[rebird]{ebirdgeo}} functions, depending on whether you set
+ \code{method="ebirdregion"} or \code{method="ebirdgeo"} - API parameters: \code{sci} for both
+ \code{\link[rebird]{ebirdregion}} and \code{\link[rebird]{ebirdgeo}}
+ \item ecoengine - \code{scientific_name} in the \code{\link[ecoengine]{ee_observations}}
+ function - API parameter: same as \code{occ} parameter
+ \item rbison - \code{species} or \code{scientificName} in the \code{\link[rbison]{bison}} or
+ \code{\link[rbison]{bison_solr}} functions, respectively. If you don't pass anything to
+ \code{geometry} parameter we use \code{bison_solr}, and if you do we use \code{bison} - API
+ parameters: same as \code{occ} parameters
+ \item AntWeb - \code{scientific_name} or \code{genus} in the \code{\link[AntWeb]{aw_data}}
+ function, depending on whether binomial or single name passed - API
+ parameter: \code{species} for \code{scientific_name} and \code{genus} for
+ \code{genus}
+ \item rvertnet - \code{taxon} in the \code{\link[rvertnet]{vertsearch}} function - API
+ parameter: \code{q}
+ \item ridigbio - \code{scientificname} in the \code{\link[ridigbio]{idig_search_records}}
+ function - API parameter: \code{scientificname}
+ \item inat - internal function - API parameter: \code{q}
+}
+If you have questions about how each of those parameters behaves with respect to
+the terms you pass to it, lookup documentation for those functions, or get in touch
+at the development repository \url{https://github.com/ropensci/spocc/issues}
+
+When searching iDigBio note that by deafult we set \code{fields = "all"}, so that we return
+a richer suite of fields than the \code{ridigbio} R client gives by default. But you can
+changes this by passing in a \code{fields} parameter to \code{idigbioopts} parameter with
+the specific fields you want.
 
 When searching ecoengine, you can leave the page argument blank to get a single page.
 Otherwise use page ranges or simply "all" to request all available pages.
@@ -156,6 +193,14 @@ occ2df(res)
 occ(query = 'Setophaga caerulescens', from = 'ebird', ebirdopts = list(region='US'))
 occ(query = 'Spinus tristis', from = 'ebird', ebirdopts =
    list(method = 'ebirdgeo', lat = 42, lng = -76, dist = 50))
+
+# idigbio data
+## scientific name search
+occ(query = "Acer", from = "idigbio", limit = 5)
+occ(query = "Acer", from = "idigbio", idigbioopts = list(offset = 5, limit  = 3))
+## geo search
+bounds <- c(-120, 40, -100, 45)
+occ(from = "idigbio", geometry = bounds, limit = 10)
 
 # You can pass on limit param to all sources even though its a different param in that source
 ## ecoengine example
@@ -292,6 +337,42 @@ occ(query = 'Accipiter striatus', from = c('ebird','bison'), limit=10, callopts=
 ## notice that callopts is ignored when from='inat' or from='antweb'
 occ(query = 'Accipiter striatus', from = 'inat', callopts=verbose())
 occ(query = 'linepithema humile', from = 'antweb', callopts=verbose())
+
+########## More thorough data source specific examples
+# idigbio
+## scientific name search
+res <- occ(query = "Acer", from = "idigbio", limit = 5)
+res$idigbio
+
+## geo search
+### bounding box
+bounds <- c(-120, 40, -100, 45)
+occ(from = "idigbio", geometry = bounds, limit = 10)
+### wkt
+# wkt <- 'POLYGON((-69.9 49.2,-69.9 29.0,-123.3 29.0,-123.3 49.2,-69.9 49.2))'
+wkt <- 'POLYGON((-98.9 44.2,-89.1 36.6,-116.7 37.5,-102.5 39.6,-98.9 44.2))'
+occ(from = "idigbio", geometry = wkt, limit = 10)
+
+## limit fields returned
+occ(query = "Acer", from = "idigbio", limit = 5,
+   idigbioopts = list(fields = "scientificname"))
+
+## offset and max_items
+occ(query = "Acer", from = "idigbio", limit = 5,
+   idigbioopts = list(offset = 10))
+occ(query = "Acer", from = "idigbio", limit = 5,
+   idigbioopts = list(max_items = 6))
+
+## sort
+occ(query = "Acer", from = "idigbio", limit = 5,
+   idigbioopts = list(sort = TRUE))$idigbio
+occ(query = "Acer", from = "idigbio", limit = 5,
+   idigbioopts = list(sort = FALSE))$idigbio
+
+## more complex queries
+### parameters passed to "rq", get combined with the name queried
+occ(query = "Acer", from = "idigbio", limit = 5,
+   idigbioopts = list(rq = list(basisofrecord="fossilspecimen")))$idigbio
 }
 }
 

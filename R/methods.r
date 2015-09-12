@@ -106,16 +106,16 @@ summary.occdatind <- function(object, ...){
   cat(sprintf('<found> %s', nn(mdat$found)), "\n")
   cat(sprintf('<returned> %s', nn(mdat$returned)), "\n")
   # cat(sprintf('<type> %s', nn(mdat$type)), "\n")
-  opts <- unlist(Map(function(x, y) paste(paste(y, x, sep=": "), "\n"), mdat$opts, names(mdat$opts), USE.NAMES=FALSE))
+  opts <- unlist(Map(function(x, y) paste(paste(y, x, sep = ": "), "\n"), mdat$opts, names(mdat$opts), USE.NAMES = FALSE))
   cat('<query options>\n', opts, "\n")
 }
 
-nn <- function(x) if(is.null(x)) "" else x
+nn <- function(x) if (is.null(x)) "" else x
 
 pastemax <- function(w, n=10){
   rrows <- vapply(w, nrow, integer(1))
   tt <- list()
-  for(i in seq_along(rrows)){
+  for (i in seq_along(rrows)) {
     tt[[i]] <- sprintf("%s (%s)", gsub("_", " ", names(rrows[i])), rrows[[i]])
   }
   n <- min(n, length(tt))
@@ -124,15 +124,8 @@ pastemax <- function(w, n=10){
 
 occinddf <- function(obj) {
   z <- obj$data[[1]]
-  df <- switch(obj$meta$source,
-         gbif = data.frame(name = z$name, longitude = z$longitude, latitude = z$latitude, prov = z$prov),
-         bison = data.frame(name = z$name, longitude = z$longitude, latitude = z$latitude, prov = z$prov),
-         inat = data.frame(name = z$name, longitude = z$longitude, latitude = z$latitude, prov = z$prov),
-         ebird = data.frame(name = z$name, longitude = z$longitude, latitude = z$latitude, prov = z$prov),
-         ecoengine = data.frame(name = z$name, longitude = z$longitude, latitude = z$latitude, prov = z$prov),
-         antweb = data.frame(name = z$name, longitude = z$longitude, latitude = z$latitude, prov = z$prov),
-         vertnet = data.frame(name = z$name, longitude = z$longitude, latitude = z$latitude, prov = z$prov)
-  )
+  df <- data.frame(name = z$name, longitude = z$longitude,
+                   latitude = z$latitude, prov = z$prov, stringsAsFactors = FALSE)
   z <- z[!names(z) %in% c('name','decimalLongitude','decimallongitude','Longitude','lng','longitude','decimal_longitude',
                        'decimalLatitude','decimallatitude','Latitude','lat','latitude','decimal_latitude','prov',
                        'geopoint.lat','geopoint.lon')]
