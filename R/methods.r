@@ -1,7 +1,8 @@
 #' spocc objects and their print, plot, and summary methods
 #'
-#' @keywords internal
 #'
+#' @name spocc_objects
+#' @keywords internal
 #' @param x Input, of class occdatind
 #' @param object Input to summary methods
 #' @param ... Further args to print, plot or summary methods
@@ -26,8 +27,16 @@
 #'
 #' # print summary of occdatind object
 #' summary(res$gbif)
+#' 
+#' # Geometry based searches print slightly differently
+#' bounds <- c(-120, 40, -100, 45)
+#' (res <- occ(from = "idigbio", geometry = bounds, limit = 10))
+#' res$idigbio
+#' ## Many bounding boxes/WKT strings
+#' bounds <- list(c(165,-53,180,-29), c(-180,-53,-175,-29))
+#' res <- occ(from = "idigbio", geometry = bounds, limit = 10)
+#' res$idigbio
 #' }
-#' @name spocc_objects
 NULL
 
 #' @export
@@ -41,7 +50,7 @@ print.occdat <- function(x, ...) {
   cat(sprintf("Occurrences - Found: %s, Returned: %s", founded(found), fdec(rows)), sep = "\n")
   cat(sprintf("Search type: %s", gettype(x)), sep = "\n")
   if (gettype(x) == "Scientific") {
-    invisible(lapply(x, catif))
+    invisible(lapply(x, catif, type = unique(unlist(unname(sc(pluck(pluck(x, "meta"), "type")))))))
   }
   cat(founded_mssg(found))
 }
@@ -59,11 +68,6 @@ fdec <- function(x) format(sum(unlist(x, recursive = TRUE)), big.mark = ",")
 founded <- function(b){
   tmp <- format(sum(unlist(b, recursive = TRUE)), big.mark = ",")
   tmp
-#   nofound <- names(b[vapply(b, is.null, logical(1))])
-#   if (length(nofound) != 0)
-#     "spocc cannot estimate complete additional records found as none available for ebird"
-#   else
-#     tmp
 }
 
 founded_mssg <- function(b){
@@ -75,17 +79,18 @@ founded_mssg <- function(b){
     NULL
 }
 
-catif <- function(z){
+catif <- function(z, ...){
   if (!is.null(z$meta$time))
-    cat(sprintf("  %s: %s", z$meta$source, spocc_wrap(pastemax(z$data, n = 3))), sep = "\n")
+    cat(sprintf("  %s: %s", z$meta$source, spocc_wrap(pastemax(z$data, ..., n = 3))), sep = "\n")
 }
 
 #' @export
 #' @rdname spocc_objects
 print.occdatind <- function(x, ..., n = 10){
-  cat( spocc_wrap(sprintf("Species [%s]", pastemax(x$data))), '\n')
-  cat(sprintf("First 10 rows of [%s]\n\n", names(x$data)[1] ))
-  spocc_trunc_mat(occinddf(x), n = n)
+  cat( spocc_wrap(sprintf("%s [%s]", 
+                          switch(x$meta$type, sci = "Species", geometry = "Geometry"), 
+                          pastemax(x$data, x$meta$type))), '\n')
+  occinddf(x, n = n)
 }
 
 #' @export
@@ -105,29 +110,41 @@ summary.occdatind <- function(object, ...){
   cat(sprintf('<time> %s', nn(mdat$time)), "\n")
   cat(sprintf('<found> %s', nn(mdat$found)), "\n")
   cat(sprintf('<returned> %s', nn(mdat$returned)), "\n")
-  # cat(sprintf('<type> %s', nn(mdat$type)), "\n")
   opts <- unlist(Map(function(x, y) paste(paste(y, x, sep = ": "), "\n"), mdat$opts, names(mdat$opts), USE.NAMES = FALSE))
   cat('<query options>\n', opts, "\n")
 }
 
 nn <- function(x) if (is.null(x)) "" else x
 
-pastemax <- function(w, n=10){
+pastemax <- function(w, type, n = 10){
   rrows <- vapply(w, nrow, integer(1))
   tt <- list()
   for (i in seq_along(rrows)) {
-    tt[[i]] <- sprintf("%s (%s)", gsub("_", " ", names(rrows[i])), rrows[[i]])
+    nms <- switch(type, sci = names(rrows[i]), geometry = sprintf('<geo%s>', i))
+    tt[[i]] <- sprintf("%s (%s)", gsub("_", " ", nms), rrows[[i]])
   }
   n <- min(n, length(tt))
   paste0(tt[1:n], collapse = ", ")
 }
 
-occinddf <- function(obj) {
+occinddf <- function(obj, n = n) {
   z <- obj$data[[1]]
+  nms <- names(obj$data)[1]
+  
+  if (NROW(z) == 0) {
+    notzero <- obj$data[sapply(obj$data, NROW) > 0]
+    if (length(notzero) > 0) {
+      z <- notzero[[1]]
+      nms <- names(notzero)[1]
+    }
+  }
+  
+  cat(sprintf("First 10 rows of [%s]\n\n", nms))
+  
   df <- data.frame(name = z$name, longitude = z$longitude,
                    latitude = z$latitude, prov = z$prov, stringsAsFactors = FALSE)
   z <- z[!names(z) %in% c('name','decimalLongitude','decimallongitude','Longitude','lng','longitude','decimal_longitude',
                        'decimalLatitude','decimallatitude','Latitude','lat','latitude','decimal_latitude','prov',
                        'geopoint.lat','geopoint.lon')]
-  do.call(cbind, list(df, z))
+  spocc_trunc_mat(do.call(cbind, list(df, z)), n = n)
 }

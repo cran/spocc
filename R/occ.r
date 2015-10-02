@@ -14,8 +14,9 @@
 #' @importFrom lubridate now ymd_hms ymd_hm ydm_hm ymd
 #' @template occtemp
 #' @template occ_egs
-occ <- function(query = NULL, from = "gbif", limit = 500, geometry = NULL, has_coords = NULL,
-  ids = NULL, callopts=list(), gbifopts = list(), bisonopts = list(), inatopts = list(),
+occ <- function(query = NULL, from = "gbif", limit = 500, start = NULL, page = NULL,
+  geometry = NULL, has_coords = NULL, ids = NULL, callopts=list(), 
+  gbifopts = list(), bisonopts = list(), inatopts = list(),
   ebirdopts = list(), ecoengineopts = list(), antwebopts = list(),
   vertnetopts = list(), idigbioopts = list()) {
 
@@ -34,30 +35,32 @@ occ <- function(query = NULL, from = "gbif", limit = 500, geometry = NULL, has_c
                  from[!from %in% sources]))
   }
 
-  loopfun <- function(x, y, z, hc, w) {
-    # x = query; y = limit; z = geometry; hc = has_coords; w = callopts
-    gbif_res <- foo_gbif(sources, x, y, z, hc, w, gbifopts)
-    bison_res <- foo_bison(sources, x, y, z, w, bisonopts)
-    inat_res <- foo_inat(sources, x, y, z, hc, w, inatopts)
+  loopfun <- function(x, y, s, p, z, hc, w) {
+    # x = query; y = limit; s = start; p = page; 
+    # z = geometry; hc = has_coords; w = callopts
+    gbif_res <- foo_gbif(sources, x, y, s, z, hc, w, gbifopts)
+    bison_res <- foo_bison(sources, x, y, s, z, w, bisonopts)
+    inat_res <- foo_inat(sources, x, y, p, z, hc, w, inatopts)
     ebird_res <- foo_ebird(sources, x, y, w, ebirdopts)
-    ecoengine_res <- foo_ecoengine(sources, x, y, z, hc, w, ecoengineopts)
-    antweb_res <- foo_antweb(sources, x, y, z, hc, w, antwebopts)
+    ecoengine_res <- foo_ecoengine(sources, x, y, p, z, hc, w, ecoengineopts)
+    antweb_res <- foo_antweb(sources, x, y, s, z, hc, w, antwebopts)
     vertnet_res <- foo_vertnet(sources, x, y, hc, w, vertnetopts)
-    idigbio_res <- foo_idigbio(sources, x, y, z, hc, w, idigbioopts)
+    idigbio_res <- foo_idigbio(sources, x, y, s, z, hc, w, idigbioopts)
     list(gbif = gbif_res, bison = bison_res, inat = inat_res, ebird = ebird_res,
          ecoengine = ecoengine_res, antweb = antweb_res, vertnet = vertnet_res,
          idigbio = idigbio_res)
   }
 
-  loopids <- function(x, y, z, hc, w) {
+  loopids <- function(x, y, s, p, z, hc, w) {
     classes <- class(x)
     if (!all(classes %in% c("gbifid", "tsn")))
-      stop("Currently, taxon identifiers have to be of class gbifid or tsn")
+      stop("Currently, taxon identifiers have to be of class gbifid or tsn", 
+           call. = FALSE)
     if (class(x) == 'gbifid') {
-      gbif_res <- foo_gbif(sources, x, y, z, hc, w, gbifopts)
+      gbif_res <- foo_gbif(sources, x, y, s, z, hc, w, gbifopts)
       bison_res <- list(time = NULL, data = data.frame(NULL))
     } else if (class(x) == 'tsn') {
-      bison_res <- foo_bison(sources, x, y, z, w, bisonopts)
+      bison_res <- foo_bison(sources, x, y, s, z, w, bisonopts)
       gbif_res <- list(time = NULL, data = data.frame(NULL))
     }
     list(gbif = gbif_res,
@@ -77,17 +80,56 @@ occ <- function(query = NULL, from = "gbif", limit = 500, geometry = NULL, has_c
 
   if (is.null(ids) && !is.null(query)) {
     # If query not null (taxonomic names passed in)
-    tmp <- lapply(query, loopfun, y = limit, z = geometry, hc = has_coords, w = callopts)
+    ## if geometry a list, do multiple queries for each geometry element
+    if (is.list(geometry)) {
+      tmp <- list()
+      for (i in seq_along(query)) {
+        tmpres <- lapply(geometry, function(b) {
+          loopfun(z = b, 
+                  y = limit, 
+                  s = start, 
+                  p = page,
+                  x = query[[i]], 
+                  hc = has_coords, 
+                  w = callopts)
+        })
+        
+        collsinglefrom <- list()
+        allfrom <- names(tmpres[[1]])
+        for (j in seq_along(allfrom)) {
+          srctmp <- lapply(tmpres, "[[", allfrom[j])
+          collsinglefrom[[ allfrom[j] ]] <- list(
+            time = time_null(pluck(srctmp, "time")), 
+            found = found_null(pluck(srctmp, "found")), 
+            data = rbind_fill(pluck(srctmp, "data")), 
+            opts = sc(list(
+              hasCoordinate = srctmp[[1]]$opts$hasCoordinate, 
+              scientificName = unlist(unique(pluck(srctmp, c("opts", "scientificName")))),
+              limit = srctmp[[1]]$opts$limit,
+              fields = srctmp[[1]]$opts$fields, 
+              geometry = unlist(pluck(srctmp, c("opts", "geometry"))), 
+              config = srctmp[[1]]$opts$config
+            ))
+          )
+        }
+        
+        tmp[[i]] <- collsinglefrom
+      }
+    } else {
+      tmp <- lapply(query, loopfun, y = limit, s = start, p = page, 
+                    z = geometry, hc = has_coords, w = callopts)
+    }
   } else if (is.null(query) && is.null(geometry)) {
     unlistids <- function(x) {
       if (length(x) == 1) {
         if (is.null(names(x))) {
           list(x)
         } else {
-          if (!names(x) %in% c("gbif", "itis"))
+          if (!names(x) %in% c("gbif", "itis")) {
             list(x)
-          else
+          } else {
             list(x[[1]])
+          }
         }
       } else {
         gg <- as.list(unlist(x, use.names = FALSE))
@@ -104,13 +146,16 @@ occ <- function(query = NULL, from = "gbif", limit = 500, geometry = NULL, has_c
     # if ids is not null (taxon identifiers passed in)
     # ids can only be passed to gbif and bison for now
     # so don't pass anything on to ecoengine, inat, or ebird
-    tmp <- lapply(ids, loopids, y = limit, z = geometry, hc = has_coords, w = callopts)
+    tmp <- lapply(ids, loopids, y = limit, s = start, p = page, 
+                  z = geometry, hc = has_coords, w = callopts)
   } else {
     type <- 'geometry'
     if (is.numeric(geometry) || is.character(geometry)) {
-      tmp <- list(loopfun(z = geometry, y = limit, x = query, hc = has_coords, w = callopts))
+      tmp <- list(loopfun(z = geometry, y = limit, s = start, p = page, 
+                          x = query, hc = has_coords, w = callopts))
     } else if (is.list(geometry)) {
-      tmp <- lapply(geometry, function(b) loopfun(z = b, y = limit, x = query, hc = has_coords, w = callopts))
+      tmp <- lapply(geometry, function(b) loopfun(z = b, y = limit, s = start, p = page, 
+                                                  x = query, hc = has_coords, w = callopts))
     }
   }
 
@@ -125,7 +170,8 @@ occ <- function(query = NULL, from = "gbif", limit = 500, geometry = NULL, has_c
     } else if (!is.null(query) && !is.null(geometry)) { # query & geometry
       names(tt) <- gsub("\\s", "_", query)
       optstmp <- tmp[[1]][[srce]]$opts
-    } else if (is.null(query) && is.null(geometry)) {
+      optstmp$scientificName <- unique(names(tt))
+    } else if (is.null(query) && is.null(geometry)) { # neither query or geometry
       names(tt) <- sapply(tmp, function(x) unclass(x[[srce]]$opts[[1]]))
       tt <- tt[!vapply(tt, nrow, 1) == 0]
       opts <- sc(lapply(tmp, function(x) x[[srce]]$opts))
@@ -147,16 +193,22 @@ occ <- function(query = NULL, from = "gbif", limit = 500, geometry = NULL, has_c
     }
 
     if (any(grepl(srce, sources))) {
-      ggg <- list(meta = list(source = srce, time = tmp[[1]][[srce]]$time,
-          found = tmp[[1]][[srce]]$found, returned = nrow(tmp[[1]][[srce]]$data),
-          type = type, opts = optstmp), data = tt)
-      class(ggg) <- "occdatind"
-      ggg
+      ggg <- list(meta = list(
+        source = srce, 
+        time = time_null(pluck(tmp, c(srce, "time"))),
+        # tmp[[1]][[srce]]$time
+        found = sum(unlist(pluck(tmp, c(srce, "found")))),
+        # tmp[[1]][[srce]]$found, 
+        returned = sum(sapply(pluck(tmp, c(srce, "data")), NROW)),
+        # nrow(tmp[[1]][[srce]]$data),
+        type = type, 
+        opts = optstmp), 
+        data = tt)
+      structure(ggg, class = "occdatind")
     } else {
       ggg <- list(meta = list(source = srce, time = NULL, found = NULL, returned = NULL,
           type = NULL, opts = NULL), data = tt)
-      class(ggg) <- "occdatind"
-      ggg
+      structure(ggg, class = "occdatind")
     }
   }
   gbif_sp <- getsplist("gbif", gbifopts)

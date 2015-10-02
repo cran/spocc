@@ -4,11 +4,11 @@
 \alias{occ}
 \title{Search for species occurrence data across many data sources.}
 \usage{
-occ(query = NULL, from = "gbif", limit = 500, geometry = NULL,
-  has_coords = NULL, ids = NULL, callopts = list(), gbifopts = list(),
-  bisonopts = list(), inatopts = list(), ebirdopts = list(),
-  ecoengineopts = list(), antwebopts = list(), vertnetopts = list(),
-  idigbioopts = list())
+occ(query = NULL, from = "gbif", limit = 500, start = NULL,
+  page = NULL, geometry = NULL, has_coords = NULL, ids = NULL,
+  callopts = list(), gbifopts = list(), bisonopts = list(),
+  inatopts = list(), ebirdopts = list(), ecoengineopts = list(),
+  antwebopts = list(), vertnetopts = list(), idigbioopts = list())
 }
 \arguments{
 \item{query}{(character) One to many scientific names. See Details for what parameter
@@ -25,13 +25,17 @@ n = 10), that's 10 * 500 = 5000, which can take a while to collect. So, when you
 set the limit to something smallish so that you can get a result quickly, then do more as
 needed.}
 
+\item{start,page}{(integer) Record to start at or page to start at. See \code{Paging} in
+Details for how these parameters are used internally. Optional}
+
 \item{geometry}{(character or nmeric) One of a Well Known Text (WKT) object or a vector of
 length 4 specifying a bounding box. This parameter searches for occurrences inside a
 box given as a bounding box or polygon described in WKT format. A WKT shape written as
 'POLYGON((30.1 10.1, 20, 20 40, 40 40, 30.1 10.1))' would be queried as is,
 i.e. http://bit.ly/HwUSif. See Details for more examples of WKT objects. The format of a
 bounding box is [min-longitude, min-latitude, max-longitude, max-latitude]. Geometry
-is not possible with vertnet right now, but should be soon.}
+is not possible with vertnet right now, but should be soon. See Details for more info
+on geometry inputs.}
 
 \item{has_coords}{(logical) Only return occurrences that have lat/long data. This works
 for gbif, ecoengine, antweb, rinat, idigbio, and vertnet, but is ignored for ebird and
@@ -80,6 +84,8 @@ care of making sure you get useful objects out at the cost of
 flexibility/options - although you can still set options for each of the
 packages via the gbifopts, bisonopts, inatopts, ebirdopts, ecoengineopts,
 vertnetopts, antwebopts and idigbioopts parameters.
+}
+\section{Inputs}{
 
 All inputs to \code{occ} are one of:
 \itemize{
@@ -88,7 +94,11 @@ All inputs to \code{occ} are one of:
  \item geometry as bounds, WKT, os Spatial classes
 }
 To search by common name, first use \code{\link{occ_names}} to find scientic names or
-taxonomic IDs, then feed those to this function.
+taxonomic IDs, then feed those to this function. Or use the \code{taxize} package
+to get names and/or IDs to use here.
+}
+
+\section{Using the query parameter}{
 
 When you use the \code{query} parameter, we pass your search terms on to parameters
 within functions that query data sources you specify. Those parameters are:
@@ -118,15 +128,24 @@ within functions that query data sources you specify. Those parameters are:
 If you have questions about how each of those parameters behaves with respect to
 the terms you pass to it, lookup documentation for those functions, or get in touch
 at the development repository \url{https://github.com/ropensci/spocc/issues}
+}
+
+\section{iDigBio notes}{
 
 When searching iDigBio note that by deafult we set \code{fields = "all"}, so that we return
 a richer suite of fields than the \code{ridigbio} R client gives by default. But you can
 changes this by passing in a \code{fields} parameter to \code{idigbioopts} parameter with
 the specific fields you want.
+}
+
+\section{Ecoengine notes}{
 
 When searching ecoengine, you can leave the page argument blank to get a single page.
 Otherwise use page ranges or simply "all" to request all available pages.
 Note however that this may hang your call if the request is simply too large.
+}
+
+\section{limit parameter}{
 
 The \code{limit} parameter is set to a default of 25. This means that you will get \bold{up to}
 25 results back for each data source you ask for data from. If there are no results for a
@@ -135,6 +154,9 @@ get 8 back. If there are 26 results for a particular source, you'll get 25 back.
 ask for more or less back by setting the limit parameter to any number. If you want to request
 a different number for each source, pass the appropriate parameter to each data source via the
 respective options parameter for each data source.
+}
+
+\section{WKT}{
 
 WKT objects are strings of pairs of lat/long coordinates that define a shape. Many classes
 of shapes are supported, including POLYGON, POINT, and MULTIPOLYGON. Within each defined shape
@@ -161,10 +183,80 @@ a bounding box but for now, you can use a few sites on the web.
  \item Bounding box - \url{http://boundingbox.klokantech.com/}
  \item Well known text - \url{http://arthur-e.github.io/Wicket/sandbox-gmaps3.html}
 }
+}
 
-\bold{BEWARE:} In cases where you request data from multiple providers, especially when including GBIF,
-there could be duplicate records since many providers' data eventually ends up with GBIF. See
-\code{\link[spocc]{spocc_duplicates}} for more.
+\section{geometry parameter}{
+
+The behavior of the \code{occ} function with respect to the \code{geometry} parameter
+varies depending on the inputs to the \code{query} parameter. Here are the options:
+\itemize{
+ \item geometry (single), no query - If a single bounding box/WKT string passed in,
+ and no query, a single query is made against each data source.
+ \item geometry (many), no query - If many bounding boxes/WKT strings are passed in,
+ we do a separate query for each bounding box/WKT string against each data source.
+ \item geometry (single), query - If a single bounding box/WKT string passed in,
+ and a single query, we do a single query against each data source.
+ \item geometry (many), query - If many bounding boxes/WKT strings are passed in,
+ and a single query, we do a separate query for each bounding box/WKT string with the
+ same queried name against each data source.
+ \item geometry (single), many query - If a single bounding box/WKT string passed in,
+ and many names to query, we do a separate query for each name, using the same geometry,
+ for each data source.
+ \item geometry (many), many query - If many bounding boxes/WKT strings are passed in,
+ and many names to query, this poses a problem for all data sources, none of which
+ accept many bounding boxes of WKT strings. So, in this scenario, we loop over each
+ name and each geometry query, and then re-combine by queried name, so that you get
+ back a single group of data for each name.
+}
+}
+
+\section{Geometry options by data provider}{
+
+\bold{wkt & bbox allowed, see WKT section above}
+\itemize{
+ \item gbif
+ \item bison
+}
+
+\bold{bbox only}
+\itemize{
+ \item ecoengine
+ \item inat
+ \item idigbio
+}
+
+\bold{No spatial search allowed}
+\itemize{
+ \item antweb
+ \item ebird
+ \item vertnet - technically is allowed, but we don't support it yet
+}
+}
+
+\section{Paging}{
+
+\itemize{
+ \item gbif - Responds to \code{start}. Default: 0
+ \item ecoengine - Responds to \code{page}. Default: 1
+ \item antweb - Responds to \code{start}. Default: 0
+ \item bison - Responds to \code{start}. Default: 0
+ \item inat - Responds to \code{page}. Default: 1
+ \item ebird - No paging, both \code{start} and \code{page} ignored.
+ \item vertnet - No paging implemented here, both \code{start} and \code{page}
+ ignored. VertNet does have a form of paging, but it uses a cursor, and can't
+ easily be included  here via parameters. However, \code{rvertnet} does paging
+ internally for you.  For example, the max records per request for VertNet is
+ 1000; if you request 2000 records, we'll do the first request, and do the
+ second request for you automatically.
+ \item idigbio - Responds to \code{start}. Default: 0
+}
+}
+
+\section{BEWARE}{
+
+In cases where you request data from multiple providers, especially when
+including GBIF, there could be duplicate records since many providers' data eventually
+ends up with GBIF. See \code{\link[spocc]{spocc_duplicates}} for more.
 }
 \examples{
 \dontrun{
@@ -183,6 +275,12 @@ res$bison
 res$vertnet
 res$vertnet$data$Bison_bison
 occ2df(res)
+
+# Paging
+one <- occ(query = 'Accipiter striatus', from = 'gbif', limit = 5)
+two <- occ(query = 'Accipiter striatus', from = 'gbif', limit = 5, start = 5)
+one$gbif
+two$gbif
 
 # Data from AntWeb
 # By species
@@ -267,6 +365,11 @@ occ(query = 'Danaus plexippus', from=c("inat","gbif","ecoengine"), geometry=boun
 occ(geometry = bounds, from = "gbif", limit=50)
 ### Many bounding boxes
 occ(geometry = list(c(-125.0,38.4,-121.8,40.9), c(-115.0,22.4,-111.8,30.9)), from = "gbif")
+
+## Many geometry and many names
+res <- occ(query = c('Danaus plexippus', 'Accipiter striatus'),
+   geometry = list(c(-125.0,38.4,-121.8,40.9), c(-115.0,22.4,-111.8,30.9)), from = "bison")
+res
 
 ## Geometry only with WKT
 wkt <- 'POLYGON((-98.9 44.2,-89.1 36.6,-116.7 37.5,-102.5 39.6,-98.9 44.2))'
@@ -373,6 +476,14 @@ occ(query = "Acer", from = "idigbio", limit = 5,
 ### parameters passed to "rq", get combined with the name queried
 occ(query = "Acer", from = "idigbio", limit = 5,
    idigbioopts = list(rq = list(basisofrecord="fossilspecimen")))$idigbio
+
+#### NOTE: no support for multipolygons yet
+## WKT's are more flexible than bounding box's. You can pass in a WKT with multiple
+## polygons like so (you can use POLYGON or MULTIPOLYGON) when specifying more than one
+## polygon. Note how each polygon is in it's own set of parentheses.
+# occ(query='Accipiter striatus', from='gbif',
+#    geometry='MULTIPOLYGON((30 10, 10 20, 20 60, 60 60, 30 10),
+#                           (30 10, 10 20, 20 60, 60 60, 30 10))')
 }
 }
 

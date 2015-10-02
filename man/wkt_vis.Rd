@@ -4,7 +4,7 @@
 \alias{wkt_vis}
 \title{Visualize well-known text area's on a map.}
 \usage{
-wkt_vis(x, zoom = 6, maptype = "terrain")
+wkt_vis(x, zoom = 6, maptype = "terrain", browse = TRUE)
 }
 \arguments{
 \item{x}{Input well-known text area (character)}
@@ -12,6 +12,9 @@ wkt_vis(x, zoom = 6, maptype = "terrain")
 \item{zoom}{Zoom level, defaults to 6 (numeric)}
 
 \item{maptype}{Map type, default is terrain (character)}
+
+\item{browse}{Open in browser or not. If not, gives back
+path to html file. Default: \code{TRUE} (logical)}
 }
 \description{
 This can be helpful in visualizing the area in which you are searching for
@@ -28,6 +31,15 @@ wkt_vis(poly)
 
 poly2 <- 'POLYGON((-125 38.4,-125 40.9,-121.8 40.9,-121.8 38.4,-125 38.4))'
 wkt_vis(poly2)
+
+# Multiple polygons
+x <- "POLYGON((-125 38.4, -121.8 38.4, -121.8 40.9, -125 40.9, -125 38.4),
+(-115 22.4, -111.8 22.4, -111.8 30.9, -115 30.9, -115 22.4))"
+wkt_vis(x)
+
+# don't open in browser
+poly2 <- 'POLYGON((-125 38.4,-125 40.9,-121.8 40.9,-121.8 38.4,-125 38.4))'
+wkt_vis(poly2, browse = FALSE)
 }
 }
 
