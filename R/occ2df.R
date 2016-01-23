@@ -82,11 +82,12 @@ occ2df.occdat <- function(obj, what = "data") {
           rename(dat, setNames("key", keymap[[y]]))
         }
       },
-      list(aa, bb, cc, dd, ee, aw, vn, id), c('gbif','bison','inat','ebird','ecoengine','antweb','vertnet','idigbio')
+      list(aa, bb, cc, dd, ee, aw, vn, id), 
+      c('gbif','bison','inat','ebird','ecoengine','antweb','vertnet','idigbio')
     )
   ))
   tmpout <- list(meta = list(obj$gbif$meta, obj$bison$meta, obj$inat$meta, obj$ebird$meta,
-                             obj$ecoengine$meta, obj$aw$meta, obj$vn$meta, obj$id$meta), data = tmp)
+      obj$ecoengine$meta, obj$aw$meta, obj$vn$meta, obj$id$meta), data = tmp)
   if (what %in% "data") tmpout$data else tmpout
 }
 
@@ -97,15 +98,3 @@ datemap <- list(gbif = 'eventDate', bison = 'date', inat = 'datetime', ebird = '
 keymap <- list(gbif = "key", bison = "occurrenceID", inat = "id", ebird = "locID",
                ecoengine = "key", antweb = "catalogNumber", vertnet = "occurrenceid",
                idigbio = "uuid")
-
-pluck_fill <- function(a, b) {
-  if (is.null(b)) {
-    NULL
-  } else {
-    if (b %in% names(a)) {
-      b
-    } else {
-      NULL
-    }
-  }
-}

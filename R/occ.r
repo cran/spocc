@@ -6,9 +6,7 @@
 #' @export
 #' @importFrom rgbif occ_search occ_get name_lookup
 #' @importFrom rebird ebirdregion ebirdgeo
-#' @importFrom ecoengine ee_observations ee_search
 #' @importFrom rbison bison_solr bison bison_tax
-#' @importFrom AntWeb aw_data
 #' @importFrom rvertnet vertsearch
 #' @importFrom ridigbio idig_search_records idig_view_records
 #' @importFrom lubridate now ymd_hms ymd_hm ydm_hm ymd
@@ -28,7 +26,7 @@ occ <- function(query = NULL, from = "gbif", limit = 500, start = NULL, page = N
     }
   }
   sources <- match.arg(from, choices = c("gbif", "bison", "inat", "ebird",
-                                         "ecoengine", "antweb", "vertnet", "idigbio"),
+            "ecoengine", "antweb", "vertnet", "idigbio"),
                        several.ok = TRUE)
   if (!all(from %in% sources)) {
     stop(sprintf("Woops, the following are not supported or spelled incorrectly: %s",
