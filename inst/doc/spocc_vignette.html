@@ -215,7 +215,7 @@ hr {
 
 <h3>Data Sources</h3>
 
-<p><code>spocc</code> currently interfaces with nine major biodiversity repositories</p>
+<p><code>spocc</code> currently interfaces with eight major biodiversity repositories</p>
 
 <ol>
 <li><p><a href="http://www.gbif.org/">Global Biodiversity Information Facility (GBIF)</a> (via <code>rgbif</code>)
@@ -234,8 +234,6 @@ ebird is a database developed and maintained by the Cornell Lab of Ornithology a
 AntWeb is the world&#39;s largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.</p></li>
 <li><p><a href="https://www.idigbio.org/">iDigBio</a> (via <code>ridigbio</code>)
 iDigBio facilitates the digitization of biological and paleobiological specimens and their associated data, and houses specimen data, as well as providing their specimen data via RESTful web services.</p></li>
-<li><p><a href="http://www.iobis.org/">OBIS</a>
-OBIS (Ocean Biogeographic Information System) allows users to search marine species datasets from all of the world&#39;s oceans.</p></li>
 </ol>
 
 <p><strong>Important Note:</strong> It&#39;s important to keep in mind that several data providers interface with many of the above mentioned repositories. This means that occurence data obtained from BISON may be duplicates of data that are also available through GBIF. We do not have a way to resolve these duplicates or overlaps at this time but it is an issue we are hoping to resolve in future versions of the package. See <code>?spocc_duplicates</code>, after installation, for more.</p>
@@ -249,7 +247,7 @@ OBIS (Ocean Biogeographic Information System) allows users to search marine spec
 </code></pre>
 
 <pre><code>#&gt; Searched: gbif
-#&gt; Occurrences - Found: 447,930, Returned: 500
+#&gt; Occurrences - Found: 529,063, Returned: 500
 #&gt; Search type: Scientific
 #&gt;   gbif: Accipiter striatus (500)
 </code></pre>
@@ -281,54 +279,52 @@ OBIS (Ocean Biogeographic Information System) allows users to search marine spec
 <pre><code>#&gt; Species [Accipiter striatus (500)] 
 #&gt; First 10 rows of [Accipiter_striatus]
 #&gt; 
-#&gt;                  name  longitude latitude prov
-#&gt; 1  Accipiter striatus    0.00000  0.00000 gbif
-#&gt; 2  Accipiter striatus  -71.06930 42.34816 gbif
-#&gt; 3  Accipiter striatus  -97.25801 32.89462 gbif
-#&gt; 4  Accipiter striatus  -72.54554 41.22175 gbif
-#&gt; 5  Accipiter striatus -104.83266 21.47117 gbif
-#&gt; 6  Accipiter striatus  -75.17209 40.34000 gbif
-#&gt; 7  Accipiter striatus  -78.11608 37.98438 gbif
-#&gt; 8  Accipiter striatus  -97.64102 30.55880 gbif
-#&gt; 9  Accipiter striatus -135.32701 57.05420 gbif
-#&gt; 10 Accipiter striatus -109.95193 23.79093 gbif
-#&gt; ..                ...        ...      ...  ...
-#&gt; Variables not shown: issues (chr), key (int), datasetKey (chr),
-#&gt;      publishingOrgKey (chr), publishingCountry (chr), protocol (chr),
-#&gt;      lastCrawled (chr), lastParsed (chr), extensions (chr), basisOfRecord
-#&gt;      (chr), sex (chr), establishmentMeans (chr), taxonKey (int),
-#&gt;      kingdomKey (int), phylumKey (int), classKey (int), orderKey (int),
-#&gt;      familyKey (int), genusKey (int), speciesKey (int), scientificName
-#&gt;      (chr), kingdom (chr), phylum (chr), order (chr), family (chr), genus
-#&gt;      (chr), species (chr), genericName (chr), specificEpithet (chr),
-#&gt;      taxonRank (chr), continent (chr), stateProvince (chr), year (int),
-#&gt;      month (int), day (int), eventDate (time), modified (chr),
+#&gt;                  name  longitude latitude prov              issues
+#&gt; 1  Accipiter striatus  -73.23131 44.28476 gbif cdround,cudc,gass84
+#&gt; 2  Accipiter striatus  -97.63810 30.24674 gbif cdround,cudc,gass84
+#&gt; 3  Accipiter striatus  -97.81493 26.03150 gbif cdround,cudc,gass84
+#&gt; 4  Accipiter striatus -135.32684 57.05398 gbif cdround,cudc,gass84
+#&gt; 5  Accipiter striatus -116.67145 32.94147 gbif cdround,cudc,gass84
+#&gt; 6  Accipiter striatus  -95.50117 29.76086 gbif cdround,cudc,gass84
+#&gt; 7  Accipiter striatus  -96.91463 32.82949 gbif cdround,cudc,gass84
+#&gt; 8  Accipiter striatus  -75.65139 45.44557 gbif cdround,cudc,gass84
+#&gt; 9  Accipiter striatus -103.01232 36.38905 gbif cdround,cudc,gass84
+#&gt; 10 Accipiter striatus  -98.24809 26.10815 gbif cdround,cudc,gass84
+#&gt; ..                ...        ...      ...  ...                 ...
+#&gt; Variables not shown: key (int), datasetKey (chr), publishingOrgKey (chr),
+#&gt;      publishingCountry (chr), protocol (chr), lastCrawled (chr),
+#&gt;      lastParsed (chr), extensions (chr), basisOfRecord (chr), taxonKey
+#&gt;      (int), kingdomKey (int), phylumKey (int), classKey (int), orderKey
+#&gt;      (int), familyKey (int), genusKey (int), speciesKey (int),
+#&gt;      scientificName (chr), kingdom (chr), phylum (chr), order (chr),
+#&gt;      family (chr), genus (chr), species (chr), genericName (chr),
+#&gt;      specificEpithet (chr), taxonRank (chr), dateIdentified (chr), year
+#&gt;      (int), month (int), day (int), eventDate (time), modified (chr),
 #&gt;      lastInterpreted (chr), references (chr), identifiers (chr), facts
 #&gt;      (chr), relations (chr), geodeticDatum (chr), class (chr), countryCode
-#&gt;      (chr), country (chr), institutionID (chr), county (chr), language
-#&gt;      (chr), gbifID (chr), type (chr), preparations (chr), catalogNumber
-#&gt;      (chr), occurrenceStatus (chr), institutionCode (chr), rights (chr),
-#&gt;      identifier (chr), verbatimEventDate (chr), higherGeography (chr),
-#&gt;      nomenclaturalCode (chr), endDayOfYear (chr), locality (chr),
-#&gt;      verbatimLocality (chr), collectionCode (chr), occurrenceID (chr),
+#&gt;      (chr), country (chr), rightsHolder (chr), identifier (chr),
+#&gt;      verbatimEventDate (chr), datasetName (chr), gbifID (chr),
+#&gt;      collectionCode (chr), verbatimLocality (chr), occurrenceID (chr),
+#&gt;      taxonID (chr), catalogNumber (chr), recordedBy (chr),
+#&gt;      http...unknown.org.occurrenceDetails (chr), institutionCode (chr),
+#&gt;      rights (chr), eventTime (chr), occurrenceRemarks (chr),
+#&gt;      identificationID (chr), informationWithheld (chr), sex (chr),
+#&gt;      establishmentMeans (chr), continent (chr), stateProvince (chr),
+#&gt;      institutionID (chr), county (chr), language (chr), type (chr),
+#&gt;      preparations (chr), occurrenceStatus (chr), nomenclaturalCode (chr),
+#&gt;      higherGeography (chr), endDayOfYear (chr), locality (chr),
 #&gt;      disposition (chr), otherCatalogNumbers (chr), startDayOfYear (chr),
-#&gt;      occurrenceRemarks (chr), accessRights (chr), higherClassification
-#&gt;      (chr), dateIdentified (chr), rightsHolder (chr), informationWithheld
-#&gt;      (chr), datasetName (chr), taxonID (chr), recordedBy (chr),
-#&gt;      http...unknown.org.occurrenceDetails (chr), eventTime (chr),
-#&gt;      identificationID (chr), dynamicProperties (chr),
+#&gt;      accessRights (chr), higherClassification (chr), elevation (dbl),
+#&gt;      elevationAccuracy (dbl), http...unknown.org.organismID (chr),
 #&gt;      identificationVerificationStatus (chr), locationAccordingTo (chr),
 #&gt;      identifiedBy (chr), georeferencedDate (chr), georeferencedBy (chr),
 #&gt;      georeferenceProtocol (chr), georeferenceVerificationStatus (chr),
-#&gt;      verbatimCoordinateSystem (chr), individualID (chr),
-#&gt;      previousIdentifications (chr), identificationQualifier (chr),
-#&gt;      samplingProtocol (chr), georeferenceSources (chr), elevation (dbl),
-#&gt;      elevationAccuracy (dbl), lifeStage (chr), waterBody (chr),
-#&gt;      recordNumber (chr), samplingEffort (chr), locationRemarks (chr),
-#&gt;      scientificNameID (chr), georeferenceRemarks (chr), source (chr),
-#&gt;      fieldNotes (chr), infraspecificEpithet (chr), collectionID (chr),
-#&gt;      ownerInstitutionCode (chr), datasetID (chr), verbatimElevation (chr),
-#&gt;      vernacularName (chr), habitat (chr)
+#&gt;      verbatimCoordinateSystem (chr), previousIdentifications (chr),
+#&gt;      identificationQualifier (chr), samplingProtocol (chr),
+#&gt;      georeferenceSources (chr), dynamicProperties (chr),
+#&gt;      infraspecificEpithet (chr), georeferenceRemarks (chr), collectionID
+#&gt;      (chr), habitat (chr), identificationRemarks (chr), vernacularName
+#&gt;      (chr), recordNumber (chr)
 </code></pre>
 
 <p>When you get data from multiple providers, the fields returned are slightly different, e.g.:</p>
@@ -337,22 +333,22 @@ OBIS (Ocean Biogeographic Information System) allows users to search marine spec
 head(df$gbif$data$Accipiter_striatus)[1:6,1:10]
 </code></pre>
 
-<pre><code>#&gt;                 name  longitude latitude                        issues
-#&gt; 1 Accipiter striatus    0.00000  0.00000 cucdmis,gass84,mdatunl,zerocd
-#&gt; 2 Accipiter striatus  -71.06930 42.34816           cdround,cudc,gass84
-#&gt; 3 Accipiter striatus  -97.25801 32.89462           cdround,cudc,gass84
-#&gt; 4 Accipiter striatus  -72.54554 41.22175           cdround,cudc,gass84
-#&gt; 5 Accipiter striatus -104.83266 21.47117           cdround,cudc,gass84
-#&gt; 6 Accipiter striatus  -75.17209 40.34000           cdround,cudc,gass84
-#&gt;   prov        key                           datasetKey
-#&gt; 1 gbif 1064538129 84b26828-f762-11e1-a439-00145eb45e9a
-#&gt; 2 gbif 1065595652 50c9509d-22c7-4a22-a47d-8c48425ef4a7
-#&gt; 3 gbif 1052607342 50c9509d-22c7-4a22-a47d-8c48425ef4a7
-#&gt; 4 gbif 1065586305 50c9509d-22c7-4a22-a47d-8c48425ef4a7
-#&gt; 5 gbif 1065595128 50c9509d-22c7-4a22-a47d-8c48425ef4a7
-#&gt; 6 gbif 1065588599 50c9509d-22c7-4a22-a47d-8c48425ef4a7
+<pre><code>#&gt;                 name  longitude latitude              issues prov
+#&gt; 1 Accipiter striatus  -73.23131 44.28476 cdround,cudc,gass84 gbif
+#&gt; 2 Accipiter striatus  -97.63810 30.24674 cdround,cudc,gass84 gbif
+#&gt; 3 Accipiter striatus  -97.81493 26.03150 cdround,cudc,gass84 gbif
+#&gt; 4 Accipiter striatus -135.32684 57.05398 cdround,cudc,gass84 gbif
+#&gt; 5 Accipiter striatus -116.67145 32.94147 cdround,cudc,gass84 gbif
+#&gt; 6 Accipiter striatus  -95.50117 29.76086 cdround,cudc,gass84 gbif
+#&gt;          key                           datasetKey
+#&gt; 1 1227769707 50c9509d-22c7-4a22-a47d-8c48425ef4a7
+#&gt; 2 1229927481 50c9509d-22c7-4a22-a47d-8c48425ef4a7
+#&gt; 3 1229927719 50c9509d-22c7-4a22-a47d-8c48425ef4a7
+#&gt; 4 1229612615 50c9509d-22c7-4a22-a47d-8c48425ef4a7
+#&gt; 5 1229613664 50c9509d-22c7-4a22-a47d-8c48425ef4a7
+#&gt; 6 1229610478 50c9509d-22c7-4a22-a47d-8c48425ef4a7
 #&gt;                       publishingOrgKey publishingCountry    protocol
-#&gt; 1 8a471700-4ce8-11db-b80e-b8a03c50a862                US DWC_ARCHIVE
+#&gt; 1 28eb1a3f-1c15-4a95-931a-4af90ecb574d                US DWC_ARCHIVE
 #&gt; 2 28eb1a3f-1c15-4a95-931a-4af90ecb574d                US DWC_ARCHIVE
 #&gt; 3 28eb1a3f-1c15-4a95-931a-4af90ecb574d                US DWC_ARCHIVE
 #&gt; 4 28eb1a3f-1c15-4a95-931a-4af90ecb574d                US DWC_ARCHIVE
@@ -363,27 +359,13 @@ head(df$gbif$data$Accipiter_striatus)[1:6,1:10]
 <pre><code class="r">head(df$ecoengine$data$Accipiter_striatus)
 </code></pre>
 
-<pre><code>#&gt;   longitude latitude    type state_province
-#&gt; 1 -122.1706 37.42894 Feature     California
-#&gt; 2 -122.2238 37.46977 Feature     California
-#&gt; 3 -122.2238 37.46977 Feature     California
-#&gt; 4 -122.2238 37.46977 Feature     California
-#&gt; 5 -122.2238 37.46977 Feature     California
-#&gt; 6 -122.2238 37.46977 Feature     California
-#&gt;   coordinate_uncertainty_in_meters   recorded_by begin_date   end_date
-#&gt; 1                             1000 C. J. Pierson 1895-01-25 1895-01-25
-#&gt; 2                             1000 C. Littlejohn 1922-11-22 1922-11-22
-#&gt; 3                             1000 C. Littlejohn 1892-11-18 1892-11-18
-#&gt; 4                             1000 C. Littlejohn 1914-10-11 1914-10-11
-#&gt; 5                             1000 C. Littlejohn 1922-11-22 1922-11-22
-#&gt; 6                             1000 C. Littlejohn 1922-10-25 1922-10-25
-#&gt;                                          source
-#&gt; 1 https://ecoengine.berkeley.edu/api/sources/8/
-#&gt; 2 https://ecoengine.berkeley.edu/api/sources/8/
-#&gt; 3 https://ecoengine.berkeley.edu/api/sources/8/
-#&gt; 4 https://ecoengine.berkeley.edu/api/sources/8/
-#&gt; 5 https://ecoengine.berkeley.edu/api/sources/8/
-#&gt; 6 https://ecoengine.berkeley.edu/api/sources/8/
+<pre><code>#&gt;   longitude latitude
+#&gt; 1 -122.1706  37.4289
+#&gt; 2 -122.2238  37.4698
+#&gt; 3 -122.2238  37.4698
+#&gt; 4 -122.2238  37.4698
+#&gt; 5 -122.2238  37.4698
+#&gt; 6 -122.2238  37.4698
 #&gt;                                                                  url
 #&gt; 1 https://ecoengine.berkeley.edu/api/observations/CAS%3AORN%3A73314/
 #&gt; 2 https://ecoengine.berkeley.edu/api/observations/CAS%3AORN%3A73315/
@@ -391,20 +373,41 @@ head(df$gbif$data$Accipiter_striatus)[1:6,1:10]
 #&gt; 4 https://ecoengine.berkeley.edu/api/observations/CAS%3AORN%3A73318/
 #&gt; 5 https://ecoengine.berkeley.edu/api/observations/CAS%3AORN%3A73319/
 #&gt; 6 https://ecoengine.berkeley.edu/api/observations/CAS%3AORN%3A73320/
-#&gt;         country                     name            locality           key
-#&gt; 1 United States Accipiter striatus velox Stanford University CAS:ORN:73314
-#&gt; 2 United States Accipiter striatus velox        Redwood City CAS:ORN:73315
-#&gt; 3 United States Accipiter striatus velox        Redwood City CAS:ORN:73338
-#&gt; 4 United States Accipiter striatus velox        Redwood City CAS:ORN:73318
-#&gt; 5 United States Accipiter striatus velox        Redwood City CAS:ORN:73319
-#&gt; 6 United States Accipiter striatus velox        Redwood City CAS:ORN:73320
-#&gt;   remote_resource last_modified observation_type      prov
-#&gt; 1                    2014-06-02         specimen ecoengine
-#&gt; 2                    2014-06-02         specimen ecoengine
-#&gt; 3                    2014-06-02         specimen ecoengine
-#&gt; 4                    2014-06-02         specimen ecoengine
-#&gt; 5                    2014-06-02         specimen ecoengine
-#&gt; 6                    2014-06-02         specimen ecoengine
+#&gt;             key observation_type                     name       country
+#&gt; 1 CAS:ORN:73314         specimen Accipiter striatus velox United States
+#&gt; 2 CAS:ORN:73315         specimen Accipiter striatus velox United States
+#&gt; 3 CAS:ORN:73338         specimen Accipiter striatus velox United States
+#&gt; 4 CAS:ORN:73318         specimen Accipiter striatus velox United States
+#&gt; 5 CAS:ORN:73319         specimen Accipiter striatus velox United States
+#&gt; 6 CAS:ORN:73320         specimen Accipiter striatus velox United States
+#&gt;   state_province begin_date            end_date
+#&gt; 1     California       &lt;NA&gt; 1895-01-25T00:00:00
+#&gt; 2     California       &lt;NA&gt; 1922-11-22T00:00:00
+#&gt; 3     California       &lt;NA&gt; 1892-11-18T00:00:00
+#&gt; 4     California       &lt;NA&gt; 1914-10-11T00:00:00
+#&gt; 5     California       &lt;NA&gt; 1922-11-22T00:00:00
+#&gt; 6     California       &lt;NA&gt; 1922-10-25T00:00:00
+#&gt;                                          source remote_resource
+#&gt; 1 https://ecoengine.berkeley.edu/api/sources/8/                
+#&gt; 2 https://ecoengine.berkeley.edu/api/sources/8/                
+#&gt; 3 https://ecoengine.berkeley.edu/api/sources/8/                
+#&gt; 4 https://ecoengine.berkeley.edu/api/sources/8/                
+#&gt; 5 https://ecoengine.berkeley.edu/api/sources/8/                
+#&gt; 6 https://ecoengine.berkeley.edu/api/sources/8/                
+#&gt;              locality coordinate_uncertainty_in_meters   recorded_by
+#&gt; 1 Stanford University                             1000 C. J. Pierson
+#&gt; 2        Redwood City                             1000 C. Littlejohn
+#&gt; 3        Redwood City                             1000 C. Littlejohn
+#&gt; 4        Redwood City                             1000 C. Littlejohn
+#&gt; 5        Redwood City                             1000 C. Littlejohn
+#&gt; 6        Redwood City                             1000 C. Littlejohn
+#&gt;                last_modified      prov
+#&gt; 1 2014-06-02T11:39:10.808198 ecoengine
+#&gt; 2 2014-06-02T11:39:10.855111 ecoengine
+#&gt; 3 2014-06-02T11:39:11.459178 ecoengine
+#&gt; 4 2014-06-02T11:39:10.929030 ecoengine
+#&gt; 5 2014-06-02T11:39:10.956478 ecoengine
+#&gt; 6 2014-06-02T11:39:10.988688 ecoengine
 </code></pre>
 
 <p>We provide a function <code>occ2df</code> that pulls out a few key columns needed for making maps:</p>
@@ -413,19 +416,19 @@ head(df$gbif$data$Accipiter_striatus)[1:6,1:10]
 </code></pre>
 
 <pre><code>#&gt;                 name  longitude latitude prov                date
-#&gt; 1 Accipiter striatus    0.00000  0.00000 gbif 2014-12-31 23:00:00
-#&gt; 2 Accipiter striatus  -71.06930 42.34816 gbif 2015-01-22 17:48:59
-#&gt; 3 Accipiter striatus  -97.25801 32.89462 gbif 2015-01-05 23:00:00
-#&gt; 4 Accipiter striatus  -72.54554 41.22175 gbif 2015-01-06 23:00:00
-#&gt; 5 Accipiter striatus -104.83266 21.47117 gbif 2015-01-20 23:00:00
-#&gt; 6 Accipiter striatus  -75.17209 40.34000 gbif 2015-01-11 20:50:25
+#&gt; 1 Accipiter striatus  -73.23131 44.28476 gbif 2016-01-03 17:46:00
+#&gt; 2 Accipiter striatus  -97.63810 30.24674 gbif 2016-01-16 14:25:40
+#&gt; 3 Accipiter striatus  -97.81493 26.03150 gbif 2016-01-14 16:57:29
+#&gt; 4 Accipiter striatus -135.32684 57.05398 gbif 2016-01-09 18:01:00
+#&gt; 5 Accipiter striatus -116.67145 32.94147 gbif 2016-01-12 11:45:00
+#&gt; 6 Accipiter striatus  -95.50117 29.76086 gbif 2016-01-09 17:05:47
 #&gt;          key
-#&gt; 1 1064538129
-#&gt; 2 1065595652
-#&gt; 3 1052607342
-#&gt; 4 1065586305
-#&gt; 5 1065595128
-#&gt; 6 1065588599
+#&gt; 1 1227769707
+#&gt; 2 1229927481
+#&gt; 3 1229927719
+#&gt; 4 1229612615
+#&gt; 5 1229613664
+#&gt; 6 1229610478
 </code></pre>
 
 <h3>Fix names</h3>
@@ -437,31 +440,38 @@ head(df$gbif$data$Pinus_contorta)[1:6, 1:5]
 </code></pre>
 
 <pre><code>#&gt;             name  longitude latitude              issues prov
-#&gt; 1 Pinus contorta   11.78660 58.16500  cudc,depunl,gass84 gbif
+#&gt; 1 Pinus contorta   16.66390 56.63950  cudc,depunl,gass84 gbif
 #&gt; 2 Pinus contorta -110.69412 44.72325 cdround,cudc,gass84 gbif
-#&gt; 3 Pinus contorta   16.66390 56.63950  cudc,depunl,gass84 gbif
-#&gt; 4 Pinus contorta   17.84890 59.12440  cudc,depunl,gass84 gbif
-#&gt; 5 Pinus contorta    9.38997 62.56203      cdround,gass84 gbif
-#&gt; 6 Pinus contorta    9.39000 62.56203      cdround,gass84 gbif
+#&gt; 3 Pinus contorta   11.78660 58.16500  cudc,depunl,gass84 gbif
+#&gt; 4 Pinus contorta    9.39020 62.56215      cdround,gass84 gbif
+#&gt; 5 Pinus contorta   14.48530 61.23390  cudc,depunl,gass84 gbif
+#&gt; 6 Pinus contorta    9.38997 62.56203      cdround,gass84 gbif
 </code></pre>
 
 <pre><code class="r">head(df$ecoengine$data$Pinus_contorta)[1:6, 1:5]
 </code></pre>
 
-<pre><code>#&gt;   longitude latitude    type state_province
-#&gt; 1 -120.6080 39.61928 Feature     California
-#&gt; 2 -117.5978 34.24155 Feature     California
-#&gt; 3 -117.6086 34.23254 Feature     California
-#&gt; 4 -119.4270 38.00443 Feature     California
-#&gt; 5 -119.4896 38.01118 Feature     California
-#&gt; 6 -119.6049 38.05735 Feature     California
-#&gt;   coordinate_uncertainty_in_meters
-#&gt; 1                             1000
-#&gt; 2                             1000
-#&gt; 3                             1000
-#&gt; 4                             1000
-#&gt; 5                             1000
-#&gt; 6                             1000
+<pre><code>#&gt;   longitude latitude
+#&gt; 1 -119.4967  38.0990
+#&gt; 2 -117.7989  34.3485
+#&gt; 3 -117.8033  34.3531
+#&gt; 4 -119.6149  38.0754
+#&gt; 5 -119.6120  38.0923
+#&gt; 6 -120.6422  39.6801
+#&gt;                                                                                          url
+#&gt; 1 https://ecoengine.berkeley.edu/api/observations/CalPhotos%3A5555%2B5555%2B0000%2B1112%3A2/
+#&gt; 2 https://ecoengine.berkeley.edu/api/observations/CalPhotos%3A5555%2B5555%2B0000%2B1122%3A2/
+#&gt; 3 https://ecoengine.berkeley.edu/api/observations/CalPhotos%3A5555%2B5555%2B0000%2B1121%3A1/
+#&gt; 4 https://ecoengine.berkeley.edu/api/observations/CalPhotos%3A5555%2B5555%2B0000%2B1109%3A1/
+#&gt; 5 https://ecoengine.berkeley.edu/api/observations/CalPhotos%3A5555%2B5555%2B0000%2B1108%3A1/
+#&gt; 6 https://ecoengine.berkeley.edu/api/observations/CalPhotos%3A5555%2B5555%2B0000%2B0939%3A3/
+#&gt;                               key observation_type
+#&gt; 1 CalPhotos:5555+5555+0000+1112:2            photo
+#&gt; 2 CalPhotos:5555+5555+0000+1122:2            photo
+#&gt; 3 CalPhotos:5555+5555+0000+1121:1            photo
+#&gt; 4 CalPhotos:5555+5555+0000+1109:1            photo
+#&gt; 5 CalPhotos:5555+5555+0000+1108:1            photo
+#&gt; 6 CalPhotos:5555+5555+0000+0939:3            photo
 </code></pre>
 
 <p>This is fine, but when trying to make a map in which points are colored for each taxon, you can have many colors for a single taxon, where instead one color per taxon is more appropriate. There is a function in <code>spocc</code> called <code>fixnames</code>, which has a few options in which you can take the shortest names (usually just the plain binomials like <em>Homo sapiens</em>), or the original name queried, or a vector of names supplied by the user.</p>
@@ -471,24 +481,24 @@ head(df$gbif$data$Pinus_contorta[,1:2])
 </code></pre>
 
 <pre><code>#&gt;             name  longitude
-#&gt; 1 Pinus contorta   11.78660
+#&gt; 1 Pinus contorta   16.66390
 #&gt; 2 Pinus contorta -110.69412
-#&gt; 3 Pinus contorta   16.66390
-#&gt; 4 Pinus contorta   17.84890
-#&gt; 5 Pinus contorta    9.38997
-#&gt; 6 Pinus contorta    9.39000
+#&gt; 3 Pinus contorta   11.78660
+#&gt; 4 Pinus contorta    9.39020
+#&gt; 5 Pinus contorta   14.48530
+#&gt; 6 Pinus contorta    9.38997
 </code></pre>
 
 <pre><code class="r">head(df$ecoengine$data$Pinus_contorta[,1:2])
 </code></pre>
 
 <pre><code>#&gt;   longitude latitude
-#&gt; 1 -120.6080 39.61928
-#&gt; 2 -117.5978 34.24155
-#&gt; 3 -117.6086 34.23254
-#&gt; 4 -119.4270 38.00443
-#&gt; 5 -119.4896 38.01118
-#&gt; 6 -119.6049 38.05735
+#&gt; 1 -119.4967  38.0990
+#&gt; 2 -117.7989  34.3485
+#&gt; 3 -117.8033  34.3531
+#&gt; 4 -119.6149  38.0754
+#&gt; 5 -119.6120  38.0923
+#&gt; 6 -120.6422  39.6801
 </code></pre>
 
 <pre><code class="r">df_comb &lt;- occ2df(df)
@@ -496,33 +506,37 @@ head(df_comb); tail(df_comb)
 </code></pre>
 
 <pre><code>#&gt;             name  longitude latitude prov                date        key
-#&gt; 1 Pinus contorta   11.78660 58.16500 gbif 2015-01-17 23:00:00 1052933649
+#&gt; 1 Pinus contorta   16.66390 56.63950 gbif 2015-01-03 23:00:00 1051515518
 #&gt; 2 Pinus contorta -110.69412 44.72325 gbif 2015-01-01 23:00:00 1088897277
-#&gt; 3 Pinus contorta   16.66390 56.63950 gbif 2015-01-03 23:00:00 1051515518
-#&gt; 4 Pinus contorta   17.84890 59.12440 gbif 2015-02-14 23:00:00 1058422905
-#&gt; 5 Pinus contorta    9.38997 62.56203 gbif 2015-02-19 23:00:00 1092518927
-#&gt; 6 Pinus contorta    9.39000 62.56203 gbif 2015-02-19 23:00:00 1092518920
+#&gt; 3 Pinus contorta   11.78660 58.16500 gbif 2015-01-17 23:00:00 1052933649
+#&gt; 4 Pinus contorta    9.39020 62.56215 gbif 2015-02-19 23:00:00 1092518647
+#&gt; 5 Pinus contorta   14.48530 61.23390 gbif 2015-02-15 23:00:00 1065763672
+#&gt; 6 Pinus contorta    9.38997 62.56203 gbif 2015-02-19 23:00:00 1092518927
 </code></pre>
 
-<pre><code>#&gt;               name longitude latitude      prov       date
-#&gt; 95  Pinus contorta -119.4536 37.59285 ecoengine 1935-08-08
-#&gt; 96  Pinus contorta -120.9033 38.62829 ecoengine 1934-10-11
-#&gt; 97  Pinus contorta -119.9077 38.63392 ecoengine 1934-10-11
-#&gt; 98  Pinus contorta -119.9077 38.63392 ecoengine 1934-10-11
-#&gt; 99  Pinus contorta -119.9077 38.63392 ecoengine 1934-10-11
-#&gt; 100 Pinus contorta -119.9043 38.60915 ecoengine 1934-10-11
+<pre><code>#&gt;               name longitude latitude      prov date
+#&gt; 95  Pinus contorta -120.3358  39.1632 ecoengine &lt;NA&gt;
+#&gt; 96  Pinus contorta -119.9564  38.7905 ecoengine &lt;NA&gt;
+#&gt; 97  Pinus contorta -121.2308  40.3064 ecoengine &lt;NA&gt;
+#&gt; 98  Pinus contorta -121.2308  40.3064 ecoengine &lt;NA&gt;
+#&gt; 99  Pinus contorta -119.5066  37.6013 ecoengine &lt;NA&gt;
+#&gt; 100 Pinus contorta -119.5158  37.6024 ecoengine &lt;NA&gt;
 #&gt;                                 key
-#&gt; 95  CalPhotos:5555+5555+0000+1419:2
-#&gt; 96  CalPhotos:5555+5555+0000+1719:2
-#&gt; 97  CalPhotos:5555+5555+0000+1721:4
-#&gt; 98  CalPhotos:5555+5555+0000+1722:2
-#&gt; 99  CalPhotos:5555+5555+0000+1723:2
-#&gt; 100 CalPhotos:5555+5555+0000+1724:3
+#&gt; 95  CalPhotos:5555+5555+0000+0436:5
+#&gt; 96  CalPhotos:5555+5555+0000+0225:1
+#&gt; 97  CalPhotos:6666+6666+0513+0077:1
+#&gt; 98  CalPhotos:6666+6666+0513+0078:1
+#&gt; 99  CalPhotos:5555+5555+0000+1417:3
+#&gt; 100 CalPhotos:5555+5555+0000+1418:4
 </code></pre>
 
-<h3>Visualization routines</h3>
+<h3>Clean data</h3>
 
-<p>All mapping functionality is now in a separate package <a href="https://github.com/ropensci/spoccutils">spoccutils</a>, to make <code>spocc</code> easier to maintain.</p>
+<p>All data cleaning functionality is in a new package <a href="https://github.com/ropenscilabs/scrubr">scrubr</a> - not yet on CRAN.</p>
+
+<h3>Make maps</h3>
+
+<p>All mapping functionality is now in a separate package <a href="https://github.com/ropensci/mapr">mapr</a> (formerly known as <code>spoccutils</code>), to make <code>spocc</code> easier to maintain.</p>
 
 </body>
 

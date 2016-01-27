@@ -4,7 +4,7 @@ Description: A programmatic interface to many species occurrence data sources,
     including 'GBIF', 'USGS's' 'BISON', 'iNaturalist', Berkeley 'Ecoinformatics'
     Engine 'eBird', 'AntWeb', and 'iDigBio'. Includes functionality for
     retrieving species occurrence data, and combining that data.
-Version: 0.4.4
+Version: 0.4.5
 License: MIT + file LICENSE
 Authors@R: c(
     person("Scott", "Chamberlain", role = c("aut", "cre"), email = "myrmecocystus@gmail.com"),
@@ -22,10 +22,10 @@ Imports: utils, methods, stats, rgbif (>= 0.9.0), rbison (>= 0.4.8),
 Suggests: testthat, knitr, taxize
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-01-22 18:41:26 UTC; sacmac
+Packaged: 2016-01-27 00:27:42 UTC; sacmac
 Author: Scott Chamberlain [aut, cre],
   Karthik Ram [aut],
   Ted Hart [aut]
 Maintainer: Scott Chamberlain <myrmecocystus@gmail.com>
 Repository: CRAN
-Date/Publication: 2016-01-23 00:29:04
+Date/Publication: 2016-01-27 18:18:40

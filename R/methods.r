@@ -87,9 +87,11 @@ catif <- function(z, ...){
 #' @export
 #' @rdname spocc_objects
 print.occdatind <- function(x, ..., n = 10){
-  cat( spocc_wrap(sprintf("%s [%s]", 
-                          switch(x$meta$type, sci = "Species", geometry = "Geometry"), 
-                          pastemax(x$data, x$meta$type))), '\n')
+  if (!is.null(x$meta$type)) {
+    cat( spocc_wrap(sprintf("%s [%s]", 
+                            switch(x$meta$type, sci = "Species", geometry = "Geometry"), 
+                            pastemax(x$data, x$meta$type))), '\n')
+  }
   occinddf(x, n = n)
 }
 
@@ -128,6 +130,11 @@ pastemax <- function(w, type, n = 10){
 }
 
 occinddf <- function(obj, n = n) {
+  if (is(obj$data, "list")) {
+    if (is(tryCatch(obj$data[[1]], error = function(e) e), "error")) {
+      obj$data[[1]] <- data.frame(NULL)
+    }
+  }
   z <- obj$data[[1]]
   nms <- names(obj$data)[1]
   
@@ -144,7 +151,7 @@ occinddf <- function(obj, n = n) {
   df <- data.frame(name = z$name, longitude = z$longitude,
                    latitude = z$latitude, prov = z$prov, stringsAsFactors = FALSE)
   z <- z[!names(z) %in% c('name','decimalLongitude','decimallongitude','Longitude','lng','longitude','decimal_longitude',
-                       'decimalLatitude','decimallatitude','Latitude','lat','latitude','decimal_latitude','prov',
-                       'geopoint.lat','geopoint.lon')]
+                          'decimalLatitude','decimallatitude','Latitude','lat','latitude','decimal_latitude','prov',
+                          'geopoint.lat','geopoint.lon')]
   spocc_trunc_mat(do.call(cbind, list(df, z)), n = n)
 }

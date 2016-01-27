@@ -262,7 +262,7 @@ ends up with GBIF. See \code{\link[spocc]{spocc_duplicates}} for more.
 # Single data sources
 (res <- occ(query = 'Accipiter striatus', from = 'gbif', limit = 5))
 res$gbif
-(res <- occ(query = 'Accipiter striatus', from = 'ecoengine', limit = 50))
+(res <- occ(query = 'Accipiter', from = 'ecoengine', limit = 50))
 res$ecoengine
 (res <- occ(query = 'Accipiter striatus', from = 'ebird', limit = 50))
 res$ebird
@@ -375,7 +375,7 @@ res
 
 ## Geometry only with WKT
 wkt <- 'POLYGON((-98.9 44.2,-89.1 36.6,-116.7 37.5,-102.5 39.6,-98.9 44.2))'
-occ(from = "gbif", geometry = bounds, limit = 10)
+occ(from = "gbif", geometry = wkt, limit = 10)
 
 # Specify many data sources, another example
 ebirdopts = list(region = 'US'); gbifopts  =  list(country = 'US')
