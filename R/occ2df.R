@@ -28,9 +28,12 @@
 #' spnames <- c('Accipiter striatus', 'Setophaga caerulescens', 'Carduelis tristis')
 #' out <- occ(query=spnames, from='gbif', gbifopts=list(hasCoordinate=TRUE), limit=10)
 #' occ2df(out)
+#' occ2df(out$gbif)
+#' 
 #' out <- occ(query='Accipiter striatus', from=c('gbif','bison','ecoengine','ebird','inat','vertnet'),
 #'    gbifopts=list(hasCoordinate=TRUE), limit=2)
 #' occ2df(out)
+#' occ2df(out$vertnet)
 #'
 #' # or combine many results from a single data source
 #' spnames <- c('Accipiter striatus', 'Carduelis tristis')
@@ -51,7 +54,7 @@ occ2df <- function(obj, what = "data") {
 
 #' @export
 occ2df.occdatind <- function(obj, what = "data") {
-  rbind_fill(obj$data)
+  as_data_frame(rbind_fill(obj$data))
 }
 
 #' @export
@@ -66,16 +69,16 @@ occ2df.occdat <- function(obj, what = "data") {
   aw <- foolist(obj$antweb)
   vn <- foolist(obj$vertnet)
   id <- foolist(obj$idigbio)
-  tmp <- data.frame(rbind_fill(
+  tmp <- rbind_fill(
     Map(
       function(x, y){
         if (NROW(x) == 0) {
-          data.frame(NULL)
+          data_frame()
         } else {
           dat <- x[ , c('name', 'longitude', 'latitude', 'prov', 
                         pluck_fill(x, datemap[[y]]), pluck_fill(x, keymap[[y]])) ]
           if (is.null(datemap[[y]])) {
-            dat$date <- rep(NA_character_, NROW(dat))
+            dat$date <- as.Date(rep(NA_character_, NROW(dat)))
           } else {
             dat <- rename(dat, setNames("date", datemap[[y]]), warn_missing = FALSE)
           }
@@ -85,10 +88,10 @@ occ2df.occdat <- function(obj, what = "data") {
       list(aa, bb, cc, dd, ee, aw, vn, id), 
       c('gbif','bison','inat','ebird','ecoengine','antweb','vertnet','idigbio')
     )
-  ))
+  )
   tmpout <- list(meta = list(obj$gbif$meta, obj$bison$meta, obj$inat$meta, obj$ebird$meta,
       obj$ecoengine$meta, obj$aw$meta, obj$vn$meta, obj$id$meta), data = tmp)
-  if (what %in% "data") tmpout$data else tmpout
+  if (what %in% "data") as_data_frame(tmpout$data) else tmpout
 }
 
 datemap <- list(gbif = 'eventDate', bison = 'date', inat = 'datetime', ebird = 'obsDt',

@@ -86,3 +86,39 @@ check_for_package <- function(x) {
     invisible(TRUE)
   }
 }
+
+check_integer <- function(x) {
+  !grepl("[^[:digit:]]", format(x,  digits = 20, scientific = FALSE))
+}
+
+is_numeric <- function(x) {
+  if (!is.null(x)) {
+    tt <- tryCatch(as.numeric(x), error = function(e) e, warning = function(w) w)
+    if (is(tt, 'warning') || is(tt, 'error') || typeof(x) == "list") {
+      FALSE
+    } else {
+      check_integer(x)
+    }
+  } else {
+    TRUE
+  }
+}
+
+is_logical <- function(x) {
+  if (!is.null(x)) {
+    inherits(x, 'logical')
+  } else {
+    TRUE
+  }
+}
+
+spocc_wrap <- function(..., indent = 0, width = getOption("width")){
+  x <- paste0(..., collapse = "")
+  wrapped <- strwrap(x, indent = indent, exdent = indent + 5, width = width)
+  paste0(wrapped, collapse = "\n")
+}
+
+rbindl <- function(x) {
+  xx <- data.table::setDF(data.table::rbindlist(x, fill = TRUE, use.names = TRUE))
+  xx
+}

@@ -52,14 +52,16 @@ See \code{\link{spocc_duplicates}} for more.
 
 
 All data cleaning functionality is in a new package: \code{scrubr} 
-(\url{https://github.com/ropenscilabs/scrubr})
+(\url{https://github.com/ropenscilabs/scrubr}).
+On CRAN: \url{https://cran.r-project.org/package=scrubr}
 }
 
 \section{Make maps}{
 
 
 All mapping functionality is now in a separate package: \code{mapr} 
-(\url{https://github.com/ropensci/mapr}) (formerly known as `spoccutils`)
+(\url{https://github.com/ropensci/mapr}) (formerly known as `spoccutils`).
+On CRAN: \url{https://cran.r-project.org/package=mapr}
 }
 \author{
 Scott Chamberlain \email{myrmecocystus@gmail.com}

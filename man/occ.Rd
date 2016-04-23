@@ -301,6 +301,13 @@ occ(query = "Acer", from = "idigbio", idigbioopts = list(offset = 5, limit  = 3)
 ## geo search
 bounds <- c(-120, 40, -100, 45)
 occ(from = "idigbio", geometry = bounds, limit = 10)
+## just class arachnida, spiders
+occ(idigbioopts = list(rq = list(class = 'arachnida')), from = "idigbio", limit = 10)
+## search certain recordsets
+sets <- c("1ffce054-8e3e-4209-9ff4-c26fa6c24c2f",
+    "8dc14464-57b3-423e-8cb0-950ab8f36b6f", 
+    "26f7cbde-fbcb-4500-80a9-a99daa0ead9d")
+occ(idigbioopts = list(rq = list(recordset = sets)), from = "idigbio", limit = 10)
 
 # You can pass on limit param to all sources even though its a different param in that source
 ## ecoengine example
@@ -390,6 +397,15 @@ spnames <- c('Accipiter striatus', 'Setophaga caerulescens', 'Spinus tristis')
 df <- occ2df(out)
 head(df)
 
+# no query, geometry, or ids passed
+## many dataset keys to gbif
+dsets <- c("14f3151a-e95d-493c-a40d-d9938ef62954", "f934f8e2-32ca-46a7-b2f8-b032a4740454")
+occ(limit = 20, from = "gbif", gbifopts = list(datasetKey = dsets))
+## class name to idigbio
+occ(limit = 20, from = "idigbio", idigbioopts = list(rq = list(class = 'arachnida')))
+## limit to ecoengine
+occ(from = "ecoengine", ecoengineopts = list(limit = 3))
+
 # taxize integration
 ## You can pass in taxonomic identifiers
 library("taxize")
@@ -439,8 +455,8 @@ occ(query = 'Accipiter striatus', from = 'bison', limit=10, callopts=verbose())
 occ(query = 'Accipiter striatus', from = 'ecoengine', limit=10, callopts=verbose())
 occ(query = 'Accipiter striatus', from = c('ebird','bison'), limit=10, callopts=verbose())
 # occ(query = 'Accipiter striatus', from = 'ebird', limit=10, callopts=timeout(seconds = 0.1))
-## notice that callopts is ignored when from='inat' or from='antweb'
 occ(query = 'Accipiter striatus', from = 'inat', callopts=verbose())
+## notice that callopts is ignored when from='antweb'
 occ(query = 'linepithema humile', from = 'antweb', callopts=verbose())
 
 ########## More thorough data source specific examples
@@ -465,8 +481,6 @@ occ(query = "Acer", from = "idigbio", limit = 5,
 ## offset and max_items
 occ(query = "Acer", from = "idigbio", limit = 5,
    idigbioopts = list(offset = 10))
-occ(query = "Acer", from = "idigbio", limit = 5,
-   idigbioopts = list(max_items = 6))
 
 ## sort
 occ(query = "Acer", from = "idigbio", limit = 5,

@@ -39,18 +39,27 @@
 #' @section Clean data:
 #' 
 #' All data cleaning functionality is in a new package: \code{scrubr} 
-#' (\url{https://github.com/ropenscilabs/scrubr})
+#' (\url{https://github.com/ropenscilabs/scrubr}).
+#' On CRAN: \url{https://cran.r-project.org/package=scrubr}
 #' 
 #' @section Make maps:
 #' 
 #' All mapping functionality is now in a separate package: \code{mapr} 
-#' (\url{https://github.com/ropensci/mapr}) (formerly known as `spoccutils`)
+#' (\url{https://github.com/ropensci/mapr}) (formerly known as `spoccutils`).
+#' On CRAN: \url{https://cran.r-project.org/package=mapr}
 #'
 #' @importFrom jsonlite toJSON
 #' @importFrom utils browseURL head read.csv data setTxtProgressBar txtProgressBar
 #' @importFrom methods is as
 #' @importFrom stats setNames
 #' @importFrom data.table rbindlist setDF
+#' @importFrom tibble as_data_frame data_frame
+#' @importFrom lubridate now ymd_hms ymd_hm ydm_hm ymd as_date
+#' @importFrom rgbif occ_search occ_get name_lookup
+#' @importFrom rebird ebirdregion ebirdgeo
+#' @importFrom rbison bison_solr bison bison_tax
+#' @importFrom rvertnet vertsearch
+#' @importFrom ridigbio idig_search_records idig_view_records
 #' @name spocc-package
 #' @aliases spocc
 #' @docType package
