@@ -12,16 +12,17 @@ test_that("occ2df basic functionality works", {
   expect_is(aadf$date, "Date")
 })
 
-test_that("occ2df works when no eventDate given back from gbif", {
-  skip_on_cran()
-  
-  res <- occ(query = 'Culex modestus', geometry = c(-11, 49.5, 2.5, 61), from = 'gbif', limit = 5)
-  bb <- occ2df(res)
-  
-  expect_is(bb, "data.frame")
-  # note date field missing
-  expect_named(bb, c('name', 'longitude', 'latitude', 'prov', 'key'))
-})
+#### FIXME: find example where no dates given back
+# test_that("occ2df works when no eventDate given back from gbif", {
+#   skip_on_cran()
+#   
+#   res <- occ(query = 'Culex modestus', geometry = c(-11, 49.5, 2.5, 61), from = 'gbif', limit = 5)
+#   bb <- occ2df(res)
+#   
+#   expect_is(bb, "data.frame")
+#   # note date field missing
+#   expect_named(bb, c('name', 'longitude', 'latitude', 'prov', 'key'))
+# })
 
 test_that("occ2df works when eventDate gone - another eg", {
   skip_on_cran()
@@ -30,7 +31,7 @@ test_that("occ2df works when eventDate gone - another eg", {
   
   # make date field null
   out$gbif$data$Pinus_contorta$eventDate <- NULL
-  expect_error(out$gbif$data$Pinus_contorta$eventDate,
+  expect_warning(out$gbif$data$Pinus_contorta$eventDate,
                "Unknown column")
   
   # but should still work

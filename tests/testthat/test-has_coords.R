@@ -1,9 +1,5 @@
 context("Limit to records with coordinates via has_coords")
 
-no_ <- function(x) {
-
-}
-
 test_that("has_coords works as expected", {
   skip_on_cran()
 
@@ -64,5 +60,5 @@ test_that("has_coords works with all data sources as planned", {
   expect_true(cc$antweb$meta$opts$georeferenced)
   expect_true(dd$inat$meta$opts$geo)
   expect_equal(ee$idigbio$meta$opts$rq$geopoint$type, "exists")
-  expect_equal(ff$vertnet$meta$opts$mappable, 1)
+  expect_true(ff$vertnet$meta$opts$mappable)
 })

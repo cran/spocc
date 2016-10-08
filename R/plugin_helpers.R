@@ -5,9 +5,9 @@ move_cols <- function(x, y)
 emptylist <- function(opts) list(time = NULL, found = NULL, data = data.frame(NULL), opts = opts)
 
 stand_latlon <- function(x){
-  lngs <- c('decimalLongitude', 'decimallongitude', 'Longitude', 'lng', 'longitude', 
+  lngs <- c('decimalLongitude', 'decimallongitude', 'Longitude', 'lng', 'longitude',
             'decimal_longitude', 'geopoint.lon')
-  lats <- c('decimalLatitude', 'decimallatitude', 'Latitude', 'lat', 'latitude', 
+  lats <- c('decimalLatitude', 'decimallatitude', 'Latitude', 'lat', 'latitude',
             'decimal_latitude', 'geopoint.lat')
   names(x)[ names(x) %in% lngs ] <- 'longitude'
   names(x)[ names(x) %in% lats ] <- 'latitude'
@@ -15,14 +15,14 @@ stand_latlon <- function(x){
 }
 
 add_latlong_if_missing <- function(x) {
-  if (is.null(x$longitude)) x$longitude <- NA
-  if (is.null(x$latitude)) x$latitude <- NA
+  if (is.null(unclass(x)$longitude)) x$longitude <- NA
+  if (is.null(unclass(x)$latitude)) x$latitude <- NA
   return(x)
 }
 
 stand_dates <- function(dat, from){
-  datevars <- list(gbif = 'eventDate', bison = c('eventDate', 'year'), inat = 'datetime',
-                   ebird = 'obsDt', ecoengine = 'begin_date', vertnet = 'eventdate', 
+  datevars <- list(gbif = 'eventDate', bison = c('eventDate', 'year'), inat = 'observed_on',
+                   ebird = 'obsDt', ecoengine = 'begin_date', vertnet = 'eventdate',
                    idigbio = 'datecollected')
   var <- datevars[[from]]
   if (from == "bison") {
@@ -41,7 +41,7 @@ stand_dates <- function(dat, from){
       vertnet = as_date(ymd(dat[[var]], truncated = 3, quiet = TRUE)),
       idigbio = as_date(ymd_hms(dat[[var]], truncated = 3, quiet = TRUE))
     )
-    if (from == "bison") rename(dat, setNames('date', var)) else dat
+    if (from == "bison") rename(dat, stats::setNames('date', var)) else dat
   }
 }
 

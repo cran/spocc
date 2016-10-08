@@ -20,7 +20,7 @@
 #' as.inat(tt[1:2])
 #'
 #' library("dplyr")
-#' rbind_all(lapply(tt, function(x) {
+#' bind_rows(lapply(tt, function(x) {
 #'   data.frame(x$taxon[c('id','name','rank','unique_name')], stringsAsFactors = FALSE)
 #' }))
 #' }
@@ -52,7 +52,7 @@ as.inat.character <- function(x) make_inat(x)
 #' @export
 as.inat.list <- function(x){
   lapply(x, function(z) {
-    if (is(z, "inatkey")) {
+    if (inherits(z, "inatkey")) {
       as.inat(z)
     } else {
       make_inat(z)
@@ -65,7 +65,7 @@ make_inat_df <- function(x){
   if (NROW(tmp) == 0) {
     stop("no data from inaturalist found", call. = FALSE)
   } else {
-    setNames(lapply(tmp$key, make_inat), tmp$key)
+    stats::setNames(lapply(tmp$key, make_inat), tmp$key)
   }
 }
 

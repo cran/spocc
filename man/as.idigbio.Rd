@@ -18,7 +18,7 @@ One or more in a list of both class idigbiokey and occkey
 Coerce occurrence keys to idigbio uuid objects
 }
 \details{
-Internally, we use \code{idig_view_records}, whereas we use 
+Internally, we use \code{idig_view_records}, whereas we use
 \code{\link{idig_search_records}} in the \code{\link{occ}} function.
 }
 \examples{
@@ -35,7 +35,7 @@ as.idigbio(uu[[1]])
 as.idigbio(tt[1:2])
 
 library("dplyr")
-rbind_all(lapply(tt, function(x) data.frame(unclass(x)$data)))
+bind_rows(lapply(tt, function(x) data.frame(unclass(x)$data)))
 }
 }
 
