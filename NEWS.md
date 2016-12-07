@@ -1,5 +1,28 @@
+spocc 0.6.0
+===========
+
+### NEW FEATURES
+
+* Added a new data source: Atlas of Living Australia (ALA), under
+the abbreviation `ala` (#98)
+* Added a new data source: Ocean Biogeographic Information System (OBIS), 
+under the abbreviation `obis` (#155)
+
+### MINOR IMPROVEMENTS
+
+* Added note to docs and minor tweak to internal methods to account
+for max results from iDigBio of 100,000. Now when you request more than 
+100K, you should get a warning saying as much (#169)
+
+### BUG FIXES
+
+* Made `occ2df()` more robust to varied inputs - allowing for users
+that may on purpose or not have a subset of the data source slots
+normally in the `occdat` class object (#171)
+
+
 spocc 0.5.4
-===============
+===========
 
 ### MINOR IMPROVEMENTS
 
@@ -25,7 +48,7 @@ we weren't parsing the output correctly. Fixed now. (#166)
 
 
 spocc 0.5.0
-===============
+===========
 
 ### NEW FEATURES
 
@@ -50,7 +73,7 @@ fixed. (#161)
 
 
 spocc 0.4.5
-===============
+===========
 
 ### MINOR IMPROVEMENTS
 
@@ -68,7 +91,7 @@ of a call to `occ()`, but nonetheless, not good (#159)
 
 
 spocc 0.4.4
-===============
+===========
 
 ### MINOR IMPROVEMENTS
 
@@ -81,7 +104,7 @@ bounding box correctly - fixed now (#158)
 
 
 spocc 0.4.0
-===============
+===========
 
 ### NEW FEATURES
 
@@ -112,7 +135,7 @@ doesn't give back dates (#144) (#145) - thanks @timcdlucas
 
 
 spocc 0.3.2
-===============
+===========
 
 ### NEW FEATURES
 
@@ -129,7 +152,7 @@ spocc 0.3.2
 * Fixed bug in vertnet data source - `occurrenceID` variable changed to `occurrenceid`
 
 spocc 0.3.0
-===============
+===========
 
 ### NEW FEATURES
 
@@ -154,7 +177,7 @@ spocc 0.3.0
 * Fixes to being able to pass curl options on to each data source's functions (#107)
 
 spocc 0.2.4
-===============
+===========
 
 ### MINOR IMPROVEMENTS
 
@@ -171,7 +194,7 @@ spocc 0.2.4
 * Changed all `\donttest` to `\dontrun` in examples as requested by CRAN maintainers (#99)
 
 spocc 0.2.2
-===============
+===========
 
 ### NEW FEATURES
 
@@ -189,7 +212,7 @@ spocc 0.2.2
 * `occ_options()` gains new parameter `where` to print either in the console or to open man file in the IDE, or prints to console in command line R. 
 
 spocc 0.2.0
-===============
+===========
 
 ### NEW FEATURES
 
@@ -209,7 +232,7 @@ spocc 0.2.0
 * Fixed bug in AntWeb output, where there was supposed to be a column titled `name`. (#71)
 
 spocc 0.1.4
-===============
+===========
 
 ### NEW FEATURES
 
@@ -217,7 +240,7 @@ spocc 0.1.4
 * In addition, you can pass in sp objects of SpatialPolygons or SpatialPolygonsDataFrame classes.
 
 spocc 0.1.2
-===============
+===========
 
 ### NEW FEATURES
 
@@ -233,6 +256,6 @@ spocc 0.1.2
 * General improvement to function documentation.
 
 spocc 0.1.0
-===============
+===========
 
 * Initial release to CRAN

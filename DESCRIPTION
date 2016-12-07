@@ -1,10 +1,14 @@
 Package: spocc
 Title: Interface to Species Occurrence Data Sources
 Description: A programmatic interface to many species occurrence data sources,
-    including 'GBIF', 'USGS' 'BISON', 'iNaturalist', Berkeley 'Ecoinformatics'
-    Engine, 'eBird', 'AntWeb', and 'iDigBio'. Includes functionality for
-    retrieving species occurrence data, and combining that data.
-Version: 0.5.4
+    including Global Biodiversity Information Facility ('GBIF'), 'USGSs'
+    Biodiversity Information Serving Our Nation ('BISON'), 'iNaturalist',
+    Berkeley 'Ecoinformatics' Engine, 'eBird', 'AntWeb', Integrated Digitized
+    'Biocollections' ('iDigBio'), 'VertNet', Ocean 'Biogeographic' Information
+    System ('OBIS'), and Atlas of Living Australia ('ALA'). Includes
+    functionality for retrieving species occurrence data, and combining
+    those data.
+Version: 0.6.0
 License: MIT + file LICENSE
 Authors@R: c(
     person("Scott", "Chamberlain", role = c("aut", "cre"), email = "myrmecocystus@gmail.com"),
@@ -22,10 +26,10 @@ Imports: utils, rgbif (>= 0.9.5), rbison (>= 0.5.0), rebird (>= 0.3.0),
 Suggests: testthat, knitr, taxize (>= 0.7.9), covr
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-10-08 05:29:10 UTC; sacmac
+Packaged: 2016-12-07 05:42:48 UTC; sacmac
 Author: Scott Chamberlain [aut, cre],
   Karthik Ram [ctb],
   Ted Hart [ctb]
 Maintainer: Scott Chamberlain <myrmecocystus@gmail.com>
 Repository: CRAN
-Date/Publication: 2016-10-08 08:48:16
+Date/Publication: 2016-12-07 08:43:54

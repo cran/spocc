@@ -379,9 +379,12 @@ foo_idigbio <- function(sources, query, limit, start, geometry, has_coords, call
 
     opts$config <- callopts
 
-    out <- tryCatch(suppressWarnings(do.call(idig_search_records, opts)), error = function(e) e)
+    out <- tryCatch(suppressWarnings(
+      do.call(ridigbio::idig_search_records, opts)), error = function(e) e)
     if (inherits(out, "simpleError")) {
-      warning(sprintf("No records found in iDigBio for %s", query))
+      # check for meaningful/useful error messages
+      warning(out$message)
+      #warning(sprintf("No records found in iDigBio for %s", query))
       emptylist(opts)
     } else{
       out$prov <- rep("idigbio", nrow(out))
@@ -392,6 +395,92 @@ foo_idigbio <- function(sources, query, limit, start, geometry, has_coords, call
       out <- stand_dates(out, "idigbio")
       list(time = time, found = attr(out, "itemCount"),
            data = as_data_frame(out), opts = opts)
+    }
+  } else {
+    emptylist(opts)
+  }
+}
+
+#' @noRd
+foo_obis <- function(sources, query, limit, start, geometry, has_coords, callopts, opts) {
+  if (any(grepl("obis", sources))) {
+    time <- now()
+    opts$scientificName <- query
+    
+    if (!is.null(geometry)) {
+      opts$geometry <- if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
+        geometry
+      } else {
+        bbox2wkt(bbox = geometry)
+      }
+    }
+    
+    if (!"limit" %in% names(opts)) opts$limit <- limit
+    if (!'offset' %in% names(opts)) opts$offset <- start
+    
+    opts$config <- callopts
+    
+    tmp <- tryCatch(do.call(obis_search, opts), error = function(e) e)
+    if (inherits(tmp, "simpleError") || "message" %in% names(tmp)) {
+      warning(sprintf("No records found in OBIS for %s", query))
+      emptylist(opts)
+    } else {
+      if (!"results" %in% names(tmp)) {
+        warning(sprintf("No records found in OBIS for %s", query))
+        emptylist(opts)
+      } else {
+        out <- tmp$results
+        out$prov <- rep("obis", NROW(out))
+        out <- rename(out, c('scientificName' = 'name'))
+        out <- add_latlong(out, nms = c('decimalLongitude', 'decimalLatitude'))
+        out <- stand_latlon(out)
+        out <- add_latlong_if_missing(out)
+        out <- stand_dates(out, "obis")
+        list(time = time, found = tmp$count, data = out, opts = opts)
+      }
+    }
+  } else {
+    emptylist(opts)
+  }
+}
+
+#' @noRd
+foo_ala <- function(sources, query, limit, start, geometry, has_coords, callopts, opts) {
+  if (any(grepl("ala", sources))) {
+    time <- now()
+    opts$taxon <- query
+    
+    if (!is.null(geometry)) {
+      opts$wkt <- if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
+        geometry
+      } else {
+        bbox2wkt(bbox = geometry)
+      }
+    }
+    
+    if (!"limit" %in% names(opts)) opts$limit <- limit
+    if (!'offset' %in% names(opts)) opts$offset <- start
+    
+    opts$config <- callopts
+    
+    tmp <- tryCatch(do.call(ala_search, opts), error = function(e) e)
+    if (inherits(tmp, "simpleError")) {
+      warning(sprintf("No records found in ALA for %s", query))
+      emptylist(opts)
+    } else {
+      if (!"occurrences" %in% names(tmp)) {
+        warning(sprintf("No records found in ALA for %s", query))
+        emptylist(opts)
+      } else {
+        out <- tmp$occurrences
+        out$prov <- rep("ala", NROW(out))
+        out <- rename(out, c('scientificName' = 'name'))
+        out <- add_latlong(out, nms = c('decimalLongitude', 'decimalLatitude'))
+        out <- stand_latlon(out)
+        out <- add_latlong_if_missing(out)
+        out <- stand_dates(out, "ala")
+        list(time = time, found = tmp$count, data = out, opts = opts)
+      }
     }
   } else {
     emptylist(opts)
