@@ -1,7 +1,8 @@
 # Plugins for the occ function for each data source
 ## the plugins
 #' @noRd
-foo_gbif <- function(sources, query, limit, start, geometry, has_coords, callopts, opts) {
+foo_gbif <- function(sources, query, limit, start, geometry, has_coords, 
+                     callopts, opts) {
   if (any(grepl("gbif", sources))) {
 
     opts$hasCoordinate <- has_coords
@@ -31,18 +32,19 @@ foo_gbif <- function(sources, query, limit, start, geometry, has_coords, callopt
       time <- now()
       if (!'limit' %in% names(opts)) opts$limit <- limit
       if (!'start' %in% names(opts)) opts$start <- start
-      opts$fields <- 'all'
       if (!is.null(geometry)) {
-        opts$geometry <- if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
+        opts$geometry <- if (grepl('POLYGON', paste(as.character(geometry), 
+                                                    collapse = " "))) {
           geometry
         } else {
           bbox2wkt(bbox = geometry)
         }
       }
-      if (length(callopts) > 0) opts$config <- callopts
+      if (length(callopts) > 0) opts$curlopts <- callopts
       out <- tryCatch(do.call("occ_data", opts), error = function(e) e)
       if (inherits(out, "simpleError")) {
-        warning(sprintf("No records found in GBIF for %s", query), call. = FALSE)
+        warning(sprintf("No records found in GBIF for %s", query), 
+                call. = FALSE)
         emptylist(opts)
       } else {
         if (inherits(out, "character")) { 
@@ -56,7 +58,8 @@ foo_gbif <- function(sources, query, limit, start, geometry, has_coords, callopt
             emptylist(opts)
           } else {
             if (length(out) > 1 && !all(c('meta', 'data') %in% names(out))) {
-              dat <- setDF(rbindlist(lapply(out, "[[", "data"), fill = TRUE, use.names = TRUE))
+              dat <- setDF(rbindlist(lapply(out, "[[", "data"), 
+                                     fill = TRUE, use.names = TRUE))
             } else {
               dat <- out$data
             }
@@ -65,7 +68,8 @@ foo_gbif <- function(sources, query, limit, start, geometry, has_coords, callopt
             }
             dat$prov <- rep("gbif", nrow(dat))
             dat$name <- as.character(dat$name)
-            cols <- c('name', 'decimalLongitude', 'decimalLatitude', 'issues', 'prov')
+            cols <- c('name', 'decimalLongitude', 'decimalLatitude', 
+                      'issues', 'prov')
             cols <- cols[ cols %in% sort(names(dat)) ]
             dat <- move_cols(x = dat, y = cols)
             dat <- stand_latlon(dat)
@@ -83,7 +87,8 @@ foo_gbif <- function(sources, query, limit, start, geometry, has_coords, callopt
 }
 
 #' @noRd
-foo_ecoengine <- function(sources, query, limit, page, geometry, has_coords, callopts, opts) {
+foo_ecoengine <- function(sources, query, limit, page, geometry, has_coords, 
+                          callopts, opts) {
   if (any(grepl("ecoengine", sources))) {
     opts <- limit_alias(opts, "ecoengine")
     time <- now()
@@ -93,7 +98,8 @@ foo_ecoengine <- function(sources, query, limit, page, geometry, has_coords, cal
     if (!'page_size' %in% names(opts)) opts$page_size <- limit
     if (!'page' %in% names(opts)) opts$page <- page
     if (!is.null(geometry)) {
-      opts$bbox <- if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
+      opts$bbox <- if (grepl('POLYGON', paste(as.character(geometry), 
+                                              collapse = " "))) {
         paste0(wkt2bbox(geometry), collapse = ",")
       } else {
         geometry
@@ -124,7 +130,8 @@ foo_ecoengine <- function(sources, query, limit, page, geometry, has_coords, cal
       names(out)[names(out) == 'scientific_name'] <- "name"
       out <- add_latlong_if_missing(out)
       out <- stand_dates(out, "ecoengine")
-      list(time = time, found = out_ee$results, data = as_data_frame(out), opts = opts)
+      list(time = time, found = out_ee$results, data = as_data_frame(out), 
+           opts = opts)
     }
   } else {
     emptylist(opts)
@@ -133,7 +140,8 @@ foo_ecoengine <- function(sources, query, limit, page, geometry, has_coords, cal
 
 
 #' @noRd
-foo_antweb <- function(sources, query, limit, start, geometry, has_coords, callopts, opts) {
+foo_antweb <- function(sources, query, limit, start, geometry, has_coords, 
+                       callopts, opts) {
   if (any(grepl("antweb", sources))) {
     time <- now()
     opts$georeferenced <- has_coords
@@ -155,7 +163,8 @@ foo_antweb <- function(sources, query, limit, start, geometry, has_coords, callo
     out <- tryCatch(do.call(aw_data2, opts), error = function(e) e)
 
     if (is.null(out) || inherits(out, "simpleError")) {
-      warning(sprintf("No records found in AntWeb for %s", query), call. = FALSE)
+      warning(sprintf("No records found in AntWeb for %s", query), 
+              call. = FALSE)
       emptylist(opts)
     } else{
       res <- out$data
@@ -163,7 +172,8 @@ foo_antweb <- function(sources, query, limit, start, geometry, has_coords, callo
       res$name <- query
       res <- stand_latlon(res)
       res <- add_latlong_if_missing(res)
-      list(time = time, found = out$count, data = as_data_frame(res), opts = opts)
+      list(time = time, found = out$count, data = as_data_frame(res), 
+           opts = opts)
     }
   } else {
     emptylist(opts)
@@ -204,24 +214,33 @@ foo_bison <- function(sources, query, limit, start, geometry, callopts, opts) {
     if (!'start' %in% names(opts)) opts$start <- start
 
     if (!is.null(geometry)) {
-      opts$aoi <- if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
+      opts$aoi <- if (grepl('POLYGON', paste(as.character(geometry), 
+                                             collapse = " "))) {
         geometry
       } else {
         bbox2wkt(bbox = geometry)
       }
     }
-    out <- tryCatch(do.call(eval(parse(text = bisonfxn)), opts), error = function(e) e)
+    out <- tryCatch(do.call(eval(parse(text = bisonfxn)), opts), 
+                    error = function(e) e)
     if (is.null(out$points) || inherits(out, "simpleError")) {
-      warning(sprintf("No records found in Bison for %s", query), call. = FALSE)
+      warning(
+        sprintf("No records found in Bison for %s", query), call. = FALSE)
       emptylist(opts)
     } else{
       dat <- out$points
       dat$prov <- rep("bison", nrow(dat))
-      if (bisonfxn == "bison_solr") dat <- rename(dat, c('scientificName' = 'name'))
+      if (bisonfxn == "bison_solr") {
+        dat <- rename(dat, c('scientificName' = 'name'))
+      }
       dat <- stand_latlon(dat)
       dat <- add_latlong_if_missing(dat)
       dat <- stand_dates(dat, "bison")
-      found <- if (bisonfxn == "bison_solr") out$num_found else out$summary$total
+      found <- if (bisonfxn == "bison_solr") {
+        out$num_found 
+      } else {
+        out$summary$total
+      }
       list(time = time, found = found, data = as_data_frame(dat), opts = opts)
     }
   } else {
@@ -230,7 +249,8 @@ foo_bison <- function(sources, query, limit, start, geometry, callopts, opts) {
 }
 
 #' @noRd
-foo_inat <- function(sources, query, limit, page, geometry, has_coords, callopts, opts) {
+foo_inat <- function(sources, query, limit, page, geometry, has_coords, 
+                     callopts, opts) {
   if (any(grepl("inat", sources))) {
     opts <- limit_alias(opts, "inat")
     opts$geo <- has_coords
@@ -239,7 +259,8 @@ foo_inat <- function(sources, query, limit, page, geometry, has_coords, callopts
     if (!'maxresults' %in% names(opts)) opts$maxresults <- limit
     if (!'page' %in% names(opts)) opts$page <- page
     if (!is.null(geometry)) {
-      opts$bounds <- if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
+      opts$bounds <- if (grepl('POLYGON', paste(as.character(geometry), 
+                                                collapse = " "))) {
         # flip lat  and long spots in the bounds vector for inat
         temp <- wkt2bbox(geometry)
         c(temp[2], temp[1], temp[4], temp[3])
@@ -247,7 +268,7 @@ foo_inat <- function(sources, query, limit, page, geometry, has_coords, callopts
         c(geometry[2], geometry[1], geometry[4], geometry[3])
       }
     }
-    opts$config <- callopts
+    opts$callopts <- callopts
     out <- tryCatch(do.call("spocc_inat_obs", opts), error = function(e) e)
     if (!is.data.frame(out$data) || inherits(out, "simpleError")) {
       warning(sprintf("No records found in INAT for %s", query), call. = FALSE)
@@ -259,7 +280,8 @@ foo_inat <- function(sources, query, limit, page, geometry, has_coords, callopts
       res <- stand_latlon(res)
       res <- add_latlong_if_missing(res)
       res <- stand_dates(res, "inat")
-      list(time = time, found = out$meta$found, data = as_data_frame(res), opts = opts)
+      list(time = time, found = out$meta$found, data = as_data_frame(res),
+           opts = opts)
     }
   } else {
     emptylist(opts)
@@ -280,9 +302,11 @@ foo_ebird <- function(sources, query, limit, callopts, opts) {
     opts$config <- callopts
     if (opts$method == "ebirdregion") {
       if (is.null(opts$region)) opts$region <- "US"
-      out <- tryCatch(do.call(ebirdregion, opts[!names(opts) %in% "method"]), error = function(e) e)
+      out <- tryCatch(do.call(ebirdregion, opts[!names(opts) %in% "method"]), 
+                      error = function(e) e)
     } else {
-      out <- tryCatch(do.call(ebirdgeo, opts[!names(opts) %in% "method"]), error = function(e) e)
+      out <- tryCatch(do.call(ebirdgeo, opts[!names(opts) %in% "method"]), 
+                      error = function(e) e)
     }
     if (!is.data.frame(out) || inherits(out, "simpleError") || NROW(out) == 0) {
       warning(sprintf("No records found in eBird for %s", query), call. = FALSE)
@@ -311,9 +335,11 @@ foo_vertnet <- function(sources, query, limit, has_coords, callopts, opts) {
     opts$verbose <- FALSE
     if (!'limit' %in% names(opts)) opts$limit <- limit
     opts$config <- callopts
-    out <- tryCatch(do.call(rvertnet::searchbyterm, opts), error = function(e) e)
+    out <- tryCatch(do.call(rvertnet::searchbyterm, opts), 
+                    error = function(e) e)
     if (!is.data.frame(out$data) || inherits(out, "simpleError")) {
-      warning(sprintf("No records found in VertNet for %s", query), call. = FALSE)
+      warning(sprintf("No records found in VertNet for %s", query), 
+              call. = FALSE)
       emptylist(opts)
     } else{
       df <- out$data
@@ -336,7 +362,8 @@ foo_vertnet <- function(sources, query, limit, has_coords, callopts, opts) {
 }
 
 #' @noRd
-foo_idigbio <- function(sources, query, limit, start, geometry, has_coords, callopts, opts) {
+foo_idigbio <- function(sources, query, limit, start, geometry, has_coords, 
+                        callopts, opts) {
   if (any(grepl("idigbio", sources))) {
     time <- now()
 
@@ -352,7 +379,8 @@ foo_idigbio <- function(sources, query, limit, start, geometry, has_coords, call
       if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
         geometry <- wkt2bbox(geometry)
       }
-      addopts$rq <- c(addopts$rq, if (is.numeric(geometry) && length(geometry) == 4) {
+      addopts$rq <- c(addopts$rq, if (is.numeric(geometry) && 
+                                      length(geometry) == 4) {
         list(geopoint = list(
           type = "geo_bounding_box",
           top_left = list(
@@ -402,13 +430,16 @@ foo_idigbio <- function(sources, query, limit, start, geometry, has_coords, call
 }
 
 #' @noRd
-foo_obis <- function(sources, query, limit, start, geometry, has_coords, callopts, opts) {
+foo_obis <- function(sources, query, limit, start, geometry, has_coords, 
+                     callopts, opts) {
+  
   if (any(grepl("obis", sources))) {
     time <- now()
     opts$scientificName <- query
     
     if (!is.null(geometry)) {
-      opts$geometry <- if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
+      opts$geometry <- if (grepl('POLYGON', paste(as.character(geometry), 
+                                                  collapse = " "))) {
         geometry
       } else {
         bbox2wkt(bbox = geometry)
@@ -418,7 +449,7 @@ foo_obis <- function(sources, query, limit, start, geometry, has_coords, callopt
     if (!"limit" %in% names(opts)) opts$limit <- limit
     if (!'offset' %in% names(opts)) opts$offset <- start
     
-    opts$config <- callopts
+    opts <- c(opts, callopts)
     
     tmp <- tryCatch(do.call(obis_search, opts), error = function(e) e)
     if (inherits(tmp, "simpleError") || "message" %in% names(tmp)) {
@@ -445,13 +476,15 @@ foo_obis <- function(sources, query, limit, start, geometry, has_coords, callopt
 }
 
 #' @noRd
-foo_ala <- function(sources, query, limit, start, geometry, has_coords, callopts, opts) {
+foo_ala <- function(sources, query, limit, start, geometry, has_coords, 
+                    callopts, opts) {
   if (any(grepl("ala", sources))) {
     time <- now()
-    opts$taxon <- query
+    opts$taxon <- sprintf('taxon_name:"%s"', query)
     
     if (!is.null(geometry)) {
-      opts$wkt <- if (grepl('POLYGON', paste(as.character(geometry), collapse = " "))) {
+      opts$wkt <- if (grepl('POLYGON', paste(as.character(geometry), 
+                                             collapse = " "))) {
         geometry
       } else {
         bbox2wkt(bbox = geometry)
@@ -461,7 +494,7 @@ foo_ala <- function(sources, query, limit, start, geometry, has_coords, callopts
     if (!"limit" %in% names(opts)) opts$limit <- limit
     if (!'offset' %in% names(opts)) opts$offset <- start
     
-    opts$config <- callopts
+    opts <- c(opts, callopts)
     
     tmp <- tryCatch(do.call(ala_search, opts), error = function(e) e)
     if (inherits(tmp, "simpleError")) {
@@ -472,14 +505,19 @@ foo_ala <- function(sources, query, limit, start, geometry, has_coords, callopts
         warning(sprintf("No records found in ALA for %s", query))
         emptylist(opts)
       } else {
-        out <- tmp$occurrences
-        out$prov <- rep("ala", NROW(out))
-        out <- rename(out, c('scientificName' = 'name'))
-        out <- add_latlong(out, nms = c('decimalLongitude', 'decimalLatitude'))
-        out <- stand_latlon(out)
-        out <- add_latlong_if_missing(out)
-        out <- stand_dates(out, "ala")
-        list(time = time, found = tmp$count, data = out, opts = opts)
+        if (!length(tmp$occurrences)) {
+          warning(sprintf("No records found in ALA for %s", query))
+          emptylist(opts)
+        } else {
+          out <- tmp$occurrences
+          out$prov <- rep("ala", NROW(out))
+          out <- rename(out, c('scientificName' = 'name'))
+          out <- add_latlong(out, nms = c('decimalLongitude', 'decimalLatitude'))
+          out <- stand_latlon(out)
+          out <- add_latlong_if_missing(out)
+          out <- stand_dates(out, "ala")
+          list(time = time, found = tmp$count, data = out, opts = opts)
+        }
       }
     }
   } else {

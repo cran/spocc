@@ -4,12 +4,14 @@
 \alias{as.ala}
 \title{Coerce occurrence keys to ALA id objects}
 \usage{
-as.ala(x)
+as.ala(x, ...)
 }
 \arguments{
 \item{x}{Various inputs, including the output from a call to
-\code{\link{occ}} (class occdat), \code{\link{occ2df}} (class data.frame),
+\code{\link[=occ]{occ()}} (class occdat), \code{\link[=occ2df]{occ2df()}} (class data.frame),
 or a list, numeric, alakey, or occkey.}
+
+\item{...}{curl options; named parameters passed on to \code{\link[crul:HttpClient]{crul::HttpClient()}}}
 }
 \value{
 One or more in a list of both class alakey and occkey
@@ -26,4 +28,3 @@ out <- occ(query=spnames, from='ala', limit=2)
 as.ala(x = res$key[1])
 }
 }
-

@@ -251,7 +251,7 @@ ALA (Atlas of Living Australia) contains information on all the known species in
 </code></pre>
 
 <pre><code>#&gt; Searched: gbif
-#&gt; Occurrences - Found: 617,192, Returned: 500
+#&gt; Occurrences - Found: 617,957, Returned: 500
 #&gt; Search type: Scientific
 #&gt;   gbif: Accipiter striatus (500)
 </code></pre>
@@ -283,22 +283,22 @@ ALA (Atlas of Living Australia) contains information on all the known species in
 <pre><code>#&gt; Species [Accipiter striatus (500)] 
 #&gt; First 10 rows of [Accipiter_striatus]
 #&gt; 
-#&gt; # A tibble: 500 × 97
-#&gt;                  name  longitude latitude  prov                 issues
-#&gt;                 &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;                  &lt;chr&gt;
-#&gt; 1  Accipiter striatus -106.31531 31.71593  gbif         cdround,gass84
-#&gt; 2  Accipiter striatus  -97.81493 26.03150  gbif cdround,cucdmis,gass84
-#&gt; 3  Accipiter striatus  -81.85267 28.81852  gbif                 gass84
-#&gt; 4  Accipiter striatus  -81.85329 28.81806  gbif         cdround,gass84
-#&gt; 5  Accipiter striatus  -95.50117 29.76086  gbif         cdround,gass84
-#&gt; 6  Accipiter striatus  -73.23131 44.28476  gbif         cdround,gass84
-#&gt; 7  Accipiter striatus  -97.94314 30.04580  gbif         cdround,gass84
-#&gt; 8  Accipiter striatus  -77.05161 38.87834  gbif         cdround,gass84
-#&gt; 9  Accipiter striatus -123.44703 48.54571  gbif         cdround,gass84
-#&gt; 10 Accipiter striatus  -96.74874 33.03102  gbif         cdround,gass84
-#&gt; # ... with 490 more rows, and 92 more variables: key &lt;int&gt;,
-#&gt; #   datasetKey &lt;chr&gt;, publishingOrgKey &lt;chr&gt;, publishingCountry &lt;chr&gt;,
-#&gt; #   protocol &lt;chr&gt;, lastCrawled &lt;chr&gt;, lastParsed &lt;chr&gt;, crawlId &lt;int&gt;,
+#&gt; # A tibble: 500 × 105
+#&gt;                  name  longitude latitude  prov         issues        key
+#&gt;                 &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;      &lt;int&gt;
+#&gt; 1  Accipiter striatus  -97.12924 32.70085  gbif cdround,gass84 1453324136
+#&gt; 2  Accipiter striatus  -84.74625 40.01773  gbif cdround,gass84 1453369124
+#&gt; 3  Accipiter striatus  -72.58904 43.85320  gbif cdround,gass84 1453335509
+#&gt; 4  Accipiter striatus  -96.77096 33.22315  gbif cdround,gass84 1453335637
+#&gt; 5  Accipiter striatus -111.01449 32.27128  gbif cdround,gass84 1453356813
+#&gt; 6  Accipiter striatus  -77.41813 39.49461  gbif cdround,gass84 1453332084
+#&gt; 7  Accipiter striatus -122.05344 36.95316  gbif cdround,gass84 1453346783
+#&gt; 8  Accipiter striatus -122.59224 38.05409  gbif cdround,gass84 1453398190
+#&gt; 9  Accipiter striatus -100.92892 25.45035  gbif cdround,gass84 1453328268
+#&gt; 10 Accipiter striatus  -96.82008 33.17463  gbif cdround,gass84 1453360827
+#&gt; # ... with 490 more rows, and 99 more variables: datasetKey &lt;chr&gt;,
+#&gt; #   publishingOrgKey &lt;chr&gt;, publishingCountry &lt;chr&gt;, protocol &lt;chr&gt;,
+#&gt; #   lastCrawled &lt;chr&gt;, lastParsed &lt;chr&gt;, crawlId &lt;int&gt;,
 #&gt; #   basisOfRecord &lt;chr&gt;, taxonKey &lt;int&gt;, kingdomKey &lt;int&gt;,
 #&gt; #   phylumKey &lt;int&gt;, classKey &lt;int&gt;, orderKey &lt;int&gt;, familyKey &lt;int&gt;,
 #&gt; #   genusKey &lt;int&gt;, scientificName &lt;chr&gt;, kingdom &lt;chr&gt;, phylum &lt;chr&gt;,
@@ -309,26 +309,28 @@ ALA (Atlas of Living Australia) contains information on all the known species in
 #&gt; #   references &lt;chr&gt;, license &lt;chr&gt;, geodeticDatum &lt;chr&gt;, class &lt;chr&gt;,
 #&gt; #   countryCode &lt;chr&gt;, country &lt;chr&gt;, rightsHolder &lt;chr&gt;,
 #&gt; #   identifier &lt;chr&gt;, informationWithheld &lt;chr&gt;, verbatimEventDate &lt;chr&gt;,
-#&gt; #   datasetName &lt;chr&gt;, verbatimLocality &lt;chr&gt;, gbifID &lt;chr&gt;,
-#&gt; #   collectionCode &lt;chr&gt;, occurrenceID &lt;chr&gt;, taxonID &lt;chr&gt;,
-#&gt; #   recordedBy &lt;chr&gt;, catalogNumber &lt;chr&gt;,
+#&gt; #   datasetName &lt;chr&gt;, collectionCode &lt;chr&gt;, gbifID &lt;chr&gt;,
+#&gt; #   verbatimLocality &lt;chr&gt;, occurrenceID &lt;chr&gt;, taxonID &lt;chr&gt;,
+#&gt; #   catalogNumber &lt;chr&gt;, recordedBy &lt;chr&gt;,
 #&gt; #   `http://unknown.org/occurrenceDetails` &lt;chr&gt;, institutionCode &lt;chr&gt;,
-#&gt; #   rights &lt;chr&gt;, occurrenceRemarks &lt;chr&gt;, identificationID &lt;chr&gt;,
-#&gt; #   eventTime &lt;chr&gt;, individualCount &lt;int&gt;, elevation &lt;dbl&gt;,
-#&gt; #   elevationAccuracy &lt;dbl&gt;, continent &lt;chr&gt;, stateProvince &lt;chr&gt;,
-#&gt; #   institutionID &lt;chr&gt;, county &lt;chr&gt;,
-#&gt; #   identificationVerificationStatus &lt;chr&gt;, language &lt;chr&gt;, type &lt;chr&gt;,
-#&gt; #   preparations &lt;chr&gt;, locationAccordingTo &lt;chr&gt;, identifiedBy &lt;chr&gt;,
-#&gt; #   georeferencedDate &lt;chr&gt;, nomenclaturalCode &lt;chr&gt;,
-#&gt; #   higherGeography &lt;chr&gt;, georeferencedBy &lt;chr&gt;,
+#&gt; #   rights &lt;chr&gt;, eventTime &lt;chr&gt;, identificationID &lt;chr&gt;,
+#&gt; #   identificationRemarks &lt;chr&gt;, occurrenceRemarks &lt;chr&gt;,
+#&gt; #   infraspecificEpithet &lt;chr&gt;, continent &lt;chr&gt;, stateProvince &lt;chr&gt;,
+#&gt; #   recordNumber &lt;chr&gt;, higherGeography &lt;chr&gt;, institutionID &lt;chr&gt;,
+#&gt; #   nomenclaturalCode &lt;chr&gt;, locality &lt;chr&gt;, county &lt;chr&gt;, language &lt;chr&gt;,
+#&gt; #   type &lt;chr&gt;, preparations &lt;chr&gt;, organismID &lt;chr&gt;,
+#&gt; #   startDayOfYear &lt;chr&gt;, ownerInstitutionCode &lt;chr&gt;, datasetID &lt;chr&gt;,
+#&gt; #   accessRights &lt;chr&gt;, verbatimElevation &lt;chr&gt;, collectionID &lt;chr&gt;,
+#&gt; #   higherClassification &lt;chr&gt;, individualCount &lt;int&gt;, elevation &lt;dbl&gt;,
+#&gt; #   elevationAccuracy &lt;dbl&gt;, identificationVerificationStatus &lt;chr&gt;,
+#&gt; #   locationAccordingTo &lt;chr&gt;, identifiedBy &lt;chr&gt;,
+#&gt; #   georeferencedDate &lt;chr&gt;, georeferencedBy &lt;chr&gt;,
 #&gt; #   georeferenceProtocol &lt;chr&gt;, georeferenceVerificationStatus &lt;chr&gt;,
-#&gt; #   endDayOfYear &lt;chr&gt;, verbatimCoordinateSystem &lt;chr&gt;, locality &lt;chr&gt;,
-#&gt; #   otherCatalogNumbers &lt;chr&gt;, organismID &lt;chr&gt;,
-#&gt; #   previousIdentifications &lt;chr&gt;, identificationQualifier &lt;chr&gt;,
-#&gt; #   samplingProtocol &lt;chr&gt;, accessRights &lt;chr&gt;,
-#&gt; #   higherClassification &lt;chr&gt;, georeferenceSources &lt;chr&gt;, sex &lt;chr&gt;,
-#&gt; #   dynamicProperties &lt;chr&gt;, vernacularName &lt;chr&gt;,
-#&gt; #   reproductiveCondition &lt;chr&gt;, lifeStage &lt;chr&gt;
+#&gt; #   endDayOfYear &lt;chr&gt;, verbatimCoordinateSystem &lt;chr&gt;,
+#&gt; #   otherCatalogNumbers &lt;chr&gt;, previousIdentifications &lt;chr&gt;,
+#&gt; #   identificationQualifier &lt;chr&gt;, samplingProtocol &lt;chr&gt;,
+#&gt; #   georeferenceSources &lt;chr&gt;, sex &lt;chr&gt;, dynamicProperties &lt;chr&gt;,
+#&gt; #   lifeStage &lt;chr&gt;, vernacularName &lt;chr&gt;, reproductiveCondition &lt;chr&gt;
 </code></pre>
 
 <p>When you get data from multiple providers, the fields returned are slightly different, e.g.:</p>
@@ -337,22 +339,22 @@ ALA (Atlas of Living Australia) contains information on all the known species in
 df$gbif$data$Accipiter_striatus
 </code></pre>
 
-<pre><code>#&gt; # A tibble: 25 × 62
-#&gt;                  name  longitude latitude                 issues  prov
-#&gt;                 &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;                  &lt;chr&gt; &lt;chr&gt;
-#&gt; 1  Accipiter striatus -106.31531 31.71593         cdround,gass84  gbif
-#&gt; 2  Accipiter striatus  -97.81493 26.03150 cdround,cucdmis,gass84  gbif
-#&gt; 3  Accipiter striatus  -81.85267 28.81852                 gass84  gbif
-#&gt; 4  Accipiter striatus  -81.85329 28.81806         cdround,gass84  gbif
-#&gt; 5  Accipiter striatus  -95.50117 29.76086         cdround,gass84  gbif
-#&gt; 6  Accipiter striatus  -73.23131 44.28476         cdround,gass84  gbif
-#&gt; 7  Accipiter striatus  -97.94314 30.04580         cdround,gass84  gbif
-#&gt; 8  Accipiter striatus  -77.05161 38.87834         cdround,gass84  gbif
-#&gt; 9  Accipiter striatus -123.44703 48.54571         cdround,gass84  gbif
-#&gt; 10 Accipiter striatus  -96.74874 33.03102         cdround,gass84  gbif
-#&gt; # ... with 15 more rows, and 57 more variables: key &lt;int&gt;,
-#&gt; #   datasetKey &lt;chr&gt;, publishingOrgKey &lt;chr&gt;, publishingCountry &lt;chr&gt;,
-#&gt; #   protocol &lt;chr&gt;, lastCrawled &lt;chr&gt;, lastParsed &lt;chr&gt;, crawlId &lt;int&gt;,
+<pre><code>#&gt; # A tibble: 25 × 63
+#&gt;                  name  longitude latitude         issues  prov        key
+#&gt;                 &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;          &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;
+#&gt; 1  Accipiter striatus  -97.12924 32.70085 cdround,gass84  gbif 1453324136
+#&gt; 2  Accipiter striatus  -84.74625 40.01773 cdround,gass84  gbif 1453369124
+#&gt; 3  Accipiter striatus  -72.58904 43.85320 cdround,gass84  gbif 1453335509
+#&gt; 4  Accipiter striatus  -96.77096 33.22315 cdround,gass84  gbif 1453335637
+#&gt; 5  Accipiter striatus -111.01449 32.27128 cdround,gass84  gbif 1453356813
+#&gt; 6  Accipiter striatus  -77.41813 39.49461 cdround,gass84  gbif 1453332084
+#&gt; 7  Accipiter striatus -122.05344 36.95316 cdround,gass84  gbif 1453346783
+#&gt; 8  Accipiter striatus -122.59224 38.05409 cdround,gass84  gbif 1453398190
+#&gt; 9  Accipiter striatus -100.92892 25.45035 cdround,gass84  gbif 1453328268
+#&gt; 10 Accipiter striatus  -96.82008 33.17463 cdround,gass84  gbif 1453360827
+#&gt; # ... with 15 more rows, and 57 more variables: datasetKey &lt;chr&gt;,
+#&gt; #   publishingOrgKey &lt;chr&gt;, publishingCountry &lt;chr&gt;, protocol &lt;chr&gt;,
+#&gt; #   lastCrawled &lt;chr&gt;, lastParsed &lt;chr&gt;, crawlId &lt;int&gt;,
 #&gt; #   basisOfRecord &lt;chr&gt;, taxonKey &lt;int&gt;, kingdomKey &lt;int&gt;,
 #&gt; #   phylumKey &lt;int&gt;, classKey &lt;int&gt;, orderKey &lt;int&gt;, familyKey &lt;int&gt;,
 #&gt; #   genusKey &lt;int&gt;, scientificName &lt;chr&gt;, kingdom &lt;chr&gt;, phylum &lt;chr&gt;,
@@ -363,12 +365,12 @@ df$gbif$data$Accipiter_striatus
 #&gt; #   references &lt;chr&gt;, license &lt;chr&gt;, geodeticDatum &lt;chr&gt;, class &lt;chr&gt;,
 #&gt; #   countryCode &lt;chr&gt;, country &lt;chr&gt;, rightsHolder &lt;chr&gt;,
 #&gt; #   identifier &lt;chr&gt;, informationWithheld &lt;chr&gt;, verbatimEventDate &lt;chr&gt;,
-#&gt; #   datasetName &lt;chr&gt;, verbatimLocality &lt;chr&gt;, gbifID &lt;chr&gt;,
-#&gt; #   collectionCode &lt;chr&gt;, occurrenceID &lt;chr&gt;, taxonID &lt;chr&gt;,
-#&gt; #   recordedBy &lt;chr&gt;, catalogNumber &lt;chr&gt;,
+#&gt; #   datasetName &lt;chr&gt;, collectionCode &lt;chr&gt;, gbifID &lt;chr&gt;,
+#&gt; #   verbatimLocality &lt;chr&gt;, occurrenceID &lt;chr&gt;, taxonID &lt;chr&gt;,
+#&gt; #   catalogNumber &lt;chr&gt;, recordedBy &lt;chr&gt;,
 #&gt; #   `http://unknown.org/occurrenceDetails` &lt;chr&gt;, institutionCode &lt;chr&gt;,
-#&gt; #   rights &lt;chr&gt;, occurrenceRemarks &lt;chr&gt;, identificationID &lt;chr&gt;,
-#&gt; #   eventTime &lt;chr&gt;
+#&gt; #   rights &lt;chr&gt;, eventTime &lt;chr&gt;, identificationID &lt;chr&gt;,
+#&gt; #   identificationRemarks &lt;chr&gt;, occurrenceRemarks &lt;chr&gt;
 </code></pre>
 
 <pre><code class="r">df$ecoengine$data$Accipiter_striatus
@@ -377,16 +379,16 @@ df$gbif$data$Accipiter_striatus
 <pre><code>#&gt; # A tibble: 25 × 17
 #&gt;    longitude latitude
 #&gt; *      &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1  -123.4474  40.4757
-#&gt; 2         NA       NA
-#&gt; 3         NA       NA
-#&gt; 4   -87.5932  41.7945
-#&gt; 5   -86.9241  41.2665
+#&gt; 1   -87.5932  41.7945
+#&gt; 2   -86.9241  41.2665
+#&gt; 3  -118.3016  34.0320
+#&gt; 4  -118.3016  34.0320
+#&gt; 5  -118.3016  34.0320
 #&gt; 6  -118.3016  34.0320
-#&gt; 7  -118.3016  34.0320
-#&gt; 8  -118.3016  34.0320
+#&gt; 7  -118.4415  34.2677
+#&gt; 8  -118.4415  34.2677
 #&gt; 9  -118.3016  34.0320
-#&gt; 10 -118.4415  34.2677
+#&gt; 10 -118.3016  34.0320
 #&gt; # ... with 15 more rows, and 15 more variables: url &lt;chr&gt;, key &lt;chr&gt;,
 #&gt; #   observation_type &lt;chr&gt;, name &lt;chr&gt;, country &lt;chr&gt;,
 #&gt; #   state_province &lt;chr&gt;, begin_date &lt;date&gt;, end_date &lt;chr&gt;, source &lt;chr&gt;,
@@ -403,16 +405,16 @@ df$gbif$data$Accipiter_striatus
 <pre><code>#&gt; # A tibble: 50 × 6
 #&gt;                  name  longitude latitude  prov       date        key
 #&gt;                 &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;date&gt;      &lt;chr&gt;
-#&gt; 1  Accipiter striatus -106.31531 31.71593  gbif 2016-01-20 1233597063
-#&gt; 2  Accipiter striatus  -97.81493 26.03150  gbif 2016-01-14 1229927719
-#&gt; 3  Accipiter striatus  -81.85267 28.81852  gbif 2016-01-18 1253301153
-#&gt; 4  Accipiter striatus  -81.85329 28.81806  gbif 2016-01-18 1249295043
-#&gt; 5  Accipiter striatus  -95.50117 29.76086  gbif 2016-01-09 1229610478
-#&gt; 6  Accipiter striatus  -73.23131 44.28476  gbif 2016-01-03 1227769707
-#&gt; 7  Accipiter striatus  -97.94314 30.04580  gbif 2016-01-24 1233600470
-#&gt; 8  Accipiter striatus  -77.05161 38.87834  gbif 2016-01-02 1270044795
-#&gt; 9  Accipiter striatus -123.44703 48.54571  gbif 2016-01-31 1249281424
-#&gt; 10 Accipiter striatus  -96.74874 33.03102  gbif 2016-01-28 1257416040
+#&gt; 1  Accipiter striatus  -97.12924 32.70085  gbif 2017-01-01 1453324136
+#&gt; 2  Accipiter striatus  -84.74625 40.01773  gbif 2017-01-21 1453369124
+#&gt; 3  Accipiter striatus  -72.58904 43.85320  gbif 2017-01-07 1453335509
+#&gt; 4  Accipiter striatus  -96.77096 33.22315  gbif 2017-01-04 1453335637
+#&gt; 5  Accipiter striatus -111.01449 32.27128  gbif 2017-01-15 1453356813
+#&gt; 6  Accipiter striatus  -77.41813 39.49461  gbif 2017-01-05 1453332084
+#&gt; 7  Accipiter striatus -122.05344 36.95316  gbif 2017-01-11 1453346783
+#&gt; 8  Accipiter striatus -122.59224 38.05409  gbif 2017-01-31 1453398190
+#&gt; 9  Accipiter striatus -100.92892 25.45035  gbif 2017-01-03 1453328268
+#&gt; 10 Accipiter striatus  -96.82008 33.17463  gbif 2017-01-05 1453360827
 #&gt; # ... with 40 more rows
 </code></pre>
 
@@ -513,14 +515,14 @@ head(df_comb); tail(df_comb)
 </code></pre>
 
 <pre><code>#&gt; # A tibble: 6 × 6
-#&gt;             name  longitude  latitude  prov       date        key
-#&gt;            &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;date&gt;      &lt;chr&gt;
-#&gt; 1 Pinus contorta  168.85006 -44.94818  gbif 2016-01-30 1269541527
-#&gt; 2 Pinus contorta -120.33987  39.34308  gbif 2016-01-03 1249276846
-#&gt; 3 Pinus contorta -123.98210  46.20296  gbif 2016-02-07 1249288703
-#&gt; 4 Pinus contorta    7.01607  62.86770  gbif 2016-02-20 1272958740
-#&gt; 5 Pinus contorta  176.32093 -39.33307  gbif 2016-02-16 1249301037
-#&gt; 6 Pinus contorta -123.35278  48.90594  gbif 2016-02-29 1253314823
+#&gt;             name longitude latitude  prov       date        key
+#&gt;            &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;date&gt;      &lt;chr&gt;
+#&gt; 1 Pinus contorta   12.3983 59.59840  gbif 2017-01-03 1433805430
+#&gt; 2 Pinus contorta -135.3480 57.05074  gbif 2017-01-12 1453348580
+#&gt; 3 Pinus contorta   17.5647 59.84490  gbif 2017-01-25 1434022908
+#&gt; 4 Pinus contorta -135.3265 57.05411  gbif 2017-01-20 1453367506
+#&gt; 5 Pinus contorta   17.5646 59.84520  gbif 2017-01-07 1433834252
+#&gt; 6 Pinus contorta   17.5646 59.84520  gbif 2017-01-09 1433861481
 </code></pre>
 
 <pre><code>#&gt; # A tibble: 6 × 6

@@ -13,12 +13,12 @@ wkt_vis(x, zoom = 6, maptype = "terrain", browse = TRUE)
 
 \item{maptype}{Map type, default is terrain (character)}
 
-\item{browse}{Open in browser or not. If not, gives back 
+\item{browse}{Open in browser or not. If not, gives back
 path to html file. Default: \code{TRUE} (logical)}
 }
 \description{
 This can be helpful in visualizing the area in which you are searching for
-occurrences with the \code{\link{occ}} function.
+occurrences with the \code{\link[=occ]{occ()}} function.
 }
 \details{
 Uses Mapbox's map layers, openes in your default browser
@@ -42,4 +42,3 @@ poly2 <- 'POLYGON((-125 38.4,-125 40.9,-121.8 40.9,-121.8 38.4,-125 38.4))'
 wkt_vis(poly2, browse = FALSE)
 }
 }
-

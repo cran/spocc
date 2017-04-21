@@ -280,6 +280,7 @@ In cases where you request data from multiple providers, especially when
 including GBIF, there could be duplicate records since many providers' data eventually
 ends up with GBIF. See \code{\link[spocc]{spocc_duplicates}} for more.
 }
+
 \examples{
 \dontrun{
 # Single data sources
@@ -530,9 +531,6 @@ occ(query = "Acer", from = "idigbio", limit = 5,
 (res <- occ(query = 'Mola mola', from = 'obis', limit = 200))
 ## get to obis data
 res$obis
-# make a map
-library("mapr")
-map_ggplot(res)
 ## get obis + gbif data
 (res <- occ(query = 'Mola mola', from = c('obis', 'gbif'), limit = 200))
 res$gbif
@@ -574,4 +572,3 @@ x$ala
 occ2df(x)
 }
 }
-
