@@ -6,7 +6,7 @@
 \usage{
 occ(query = NULL, from = "gbif", limit = 500, start = NULL,
   page = NULL, geometry = NULL, has_coords = NULL, ids = NULL,
-  callopts = list(), gbifopts = list(), bisonopts = list(),
+  date = NULL, callopts = list(), gbifopts = list(), bisonopts = list(),
   inatopts = list(), ebirdopts = list(), ecoengineopts = list(),
   antwebopts = list(), vertnetopts = list(), idigbioopts = list(),
   obisopts = list(), alaopts = list())
@@ -32,7 +32,7 @@ Details for how these parameters are used internally. Optional}
 \item{geometry}{(character or nmeric) One of a Well Known Text (WKT) object or a vector of
 length 4 specifying a bounding box. This parameter searches for occurrences inside a
 box given as a bounding box or polygon described in WKT format. A WKT shape written as
-'POLYGON((30.1 10.1, 20, 20 40, 40 40, 30.1 10.1))' would be queried as is,
+'POLYGON((30.1 10.1, 20 40, 40 40, 30.1 10.1))' would be queried as is,
 i.e. http://bit.ly/HwUSif. See Details for more examples of WKT objects. The format of a
 bounding box is [min-longitude, min-latitude, max-longitude, max-latitude]. Geometry
 is not possible with vertnet right now, but should be soon. See Details for more info
@@ -46,8 +46,14 @@ bison data sources. You can easily though remove records without lat/long data.}
 usage. Currently, identifiers for only 'gbif' and 'bison' for parameter 'from' supported. If
 this parameter is used, query parameter can not be used - if it is, a warning is thrown.}
 
-\item{callopts}{Options passed on to \code{\link[httr]{GET}}, e.g., for debugging curl calls,
-setting timeouts, etc. This parameter is ignored for sources: antweb, inat.}
+\item{date}{(character/Date) A length 2 vector containing two dates of the form 
+YYY-MM-DD. These can be character of Date class. These are used to do a date range search.
+Of course there are other types of date searches one may want to do but date range 
+seems like the most common date search use case.}
+
+\item{callopts}{Options passed on to \code{\link[crul]{HttpClient}}, e.g., 
+for debugging curl calls, setting timeouts, etc. This parameter is ignored 
+for sources: antweb, inat.}
 
 \item{gbifopts}{(list) List of named options to pass on to \code{\link[rgbif]{occ_search}}. See
 also \code{\link{occ_options}}.}
@@ -247,6 +253,28 @@ varies depending on the inputs to the \code{query} parameter. Here are the optio
 }
 }
 
+\section{Notes on the date parameter}{
+
+Date searches with the `date` parameter are allowed for all sources 
+except ebird.
+
+Notes on some special cases
+
+\itemize{
+ \item idigbio: We search on the `datecollected` field. Other date fields can be 
+searched on, but we chose `datecollected` as it seemed most appropriate.
+ \item vertnet: If you want more flexible date searches, you can pass various 
+types of date searches to `vertnetopts`. See [rvertnet::searchbyterm()]
+for more information
+ \item ala: There's some issues with the dates returned from ALA. They are 
+returned as time stamps, and some seem to be malformed. So do beware 
+of using ALA dates for important things.
+}
+
+Get in touch if you have other date search use cases you think 
+are widely useful
+}
+
 \section{Paging}{
 
 All data sources respond to the \code{limit} parameter passed to \code{occ}.
@@ -304,6 +332,29 @@ one <- occ(query = 'Accipiter striatus', from = 'gbif', limit = 5)
 two <- occ(query = 'Accipiter striatus', from = 'gbif', limit = 5, start = 5)
 one$gbif
 two$gbif
+
+
+# Date range searches across data sources
+## Not possible for ebird
+## bison
+occ(query = 'Acer', date = c('2010-08-08', '2010-08-21'), from = 'bison', limit=5)
+## ala
+occ(date = c('2018-01-01T00:00:00Z', '2018-03-28T00:00:00Z'), from = 'ala', limit = 5)
+## gbif
+occ(query = 'Accipiter striatus', date = c('2010-08-01', '2010-08-31'), from = 'gbif', limit=5)
+# ecoengine
+occ(date = c('2010-01-01', '2010-12-31'), from = 'ecoengine', limit=5)
+## antweb
+occ(query = "acanthognathus", date = c('2010-01-01', '2010-12-31'), from = 'antweb', limit=5)
+## vertnet
+occ(query = 'Mustela nigripes', date = c('1990-01-01', '2015-12-31'), from = 'vertnet', limit=5)
+## idigbio
+occ(query = 'Acer', date = c('2010-01-01', '2015-12-31'), from = 'idigbio', limit=5)
+## obis
+occ(query = 'Mola mola', date = c('2015-01-01', '2015-12-31'), from = 'obis', limit=5)
+## inat
+occ(query = 'Danaus plexippus', date = c('2015-01-01', '2015-12-31'), from = 'inat', limit=5)
+
 
 # Restrict to records with coordinates
 occ(query = "Acer", from = "idigbio", limit = 5, has_coords = TRUE)
@@ -466,23 +517,30 @@ out <- occ(geometry = sppoly, limit=50)
 out$gbif$data
 
 ## Two polygons in SpatialPolygonsDataFrame class
-sppoly_df <- SpatialPolygonsDataFrame(sppoly, data.frame(a=c(1,2), b=c("a","b"), c=c(TRUE,FALSE),
+sppoly_df <- SpatialPolygonsDataFrame(sppoly, 
+   data.frame(a=c(1,2), b=c("a","b"), c=c(TRUE,FALSE),
    row.names=row.names(sppoly)))
 out <- occ(geometry = sppoly_df, limit=50)
 out$gbif$data
 
 # curl debugging
 library('httr')
-occ(query = 'Accipiter striatus', from = 'gbif', limit=10, callopts=verbose())
-# occ(query = 'Accipiter striatus', from = 'ebird', limit=10, callopts=verbose())
-occ(query = 'Accipiter striatus', from = 'bison', limit=10, callopts=verbose())
-occ(query = 'Accipiter striatus', from = 'ecoengine', limit=10, callopts=verbose())
-occ(query = 'Accipiter striatus', from = c('ebird','bison'), limit=10, callopts=verbose())
-# occ(query = 'Accipiter striatus', from = 'ebird', limit=10, callopts=timeout(seconds = 0.1))
-occ(query = 'Accipiter striatus', from = 'inat', callopts=verbose())
-occ(query = 'Mola mola', from = 'obis', limit = 200, callopts = verbose())
-## notice that callopts is ignored when from='antweb'
-occ(query = 'linepithema humile', from = 'antweb', callopts=verbose())
+occ(query = 'Accipiter striatus', from = 'gbif', limit=10, 
+ callopts=list(verbose = TRUE))
+occ(query = 'Accipiter striatus', from = 'bison', limit=10, 
+ callopts=list(verbose = TRUE))
+occ(query = 'Accipiter striatus', from = 'ecoengine', limit=10, 
+ callopts=list(verbose = TRUE))
+occ(query = 'Accipiter striatus', from = c('ebird','bison'), limit=10, 
+ callopts=list(verbose = TRUE))
+# occ(query = 'Accipiter striatus', from = 'ebird', limit=10, 
+# callopts=timeout(seconds = 0.1))
+occ(query = 'Accipiter striatus', from = 'inat', 
+ callopts=list(verbose = TRUE))
+occ(query = 'Mola mola', from = 'obis', limit = 200, 
+ callopts = list(verbose = TRUE))
+occ(query = 'linepithema humile', from = 'antweb', 
+ callopts=list(verbose = TRUE))
 
 ########## More thorough data source specific examples
 # idigbio

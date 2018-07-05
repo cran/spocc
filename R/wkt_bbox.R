@@ -18,8 +18,8 @@
 #' # Convert a bounding box to a WKT
 #'
 #' ## Pass in a vector of length 4 with all values
-#' bbox2wkt(bbox = list(c(-125.0,38.4,-121.8,40.9)))
-#'
+#' bbox2wkt(bbox = c(-125.0,38.4,-121.8,40.9))
+#' 
 #' ## Or pass in each value separately
 #' bbox2wkt(-125.0, 38.4, -121.8, 40.9)
 #'
@@ -29,7 +29,7 @@
 #' 
 #' identical(
 #'  bbox2wkt(-125.0, 38.4, -121.8, 40.9),
-#'  "POLYGON((-125 38.4,-125 40.9,-121.8 40.9,-121.8 38.4,-125 38.4))"
+#'  "POLYGON((-125 38.4,-121.8 38.4,-121.8 40.9,-125 40.9,-125 38.4))"
 #' )
 #' 
 #' identical(
@@ -41,8 +41,17 @@
 #'  )
 #' )
 bbox2wkt <- function(minx=NA, miny=NA, maxx=NA, maxy=NA, bbox=NULL) {
-  if (is.null(bbox)) bbox <- list(c(minx, miny, maxx, maxy))
-  wicket::bounding_wkt(values = bbox)
+  if (is.null(bbox)) bbox <- c(minx, miny, maxx, maxy)
+  # wicket::bounding_wkt(values = bbox)
+  stopifnot(is.numeric(as.numeric(bbox)))
+  bbox_template <- 'POLYGON((%s %s,%s %s,%s %s,%s %s,%s %s))'
+  sprintf(bbox_template, 
+    bbox[1], bbox[2],
+    bbox[3], bbox[2],
+    bbox[3], bbox[4],
+    bbox[1], bbox[4],
+    bbox[1], bbox[2]
+  )
 }
 
 #' @param wkt A Well Known Text object.
