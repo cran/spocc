@@ -4,15 +4,19 @@
 #' or many data sources.
 #'
 #' @export
+#' @family queries
 #' @template occtemp
 #' @template occ_egs
 occ <- function(query = NULL, from = "gbif", limit = 500, start = NULL, 
   page = NULL, geometry = NULL, has_coords = NULL, ids = NULL, date = NULL,
   callopts=list(),
   gbifopts = list(), bisonopts = list(), inatopts = list(),
-  ebirdopts = list(), ecoengineopts = list(), antwebopts = list(),
+  ebirdopts = list(), ecoengineopts = list(),
   vertnetopts = list(), idigbioopts = list(), obisopts = list(), 
-  alaopts = list()) {
+  alaopts = list(), throw_warnings = TRUE) {
+
+  assert(throw_warnings, "logical")
+  Sys.setenv(SPOCC_THROW_ERRORS = throw_warnings)
 
   type <- "sci"
 
@@ -38,7 +42,7 @@ occ <- function(query = NULL, from = "gbif", limit = 500, start = NULL,
     }
   }
   sources <- match.arg(from, choices = c("gbif", "bison", "inat", "ebird",
-            "ecoengine", "antweb", "vertnet", "idigbio", "obis", "ala"),
+            "ecoengine", "vertnet", "idigbio", "obis", "ala"),
                        several.ok = TRUE)
   if (!all(from %in% sources)) {
     stop(
@@ -62,13 +66,12 @@ occ <- function(query = NULL, from = "gbif", limit = 500, start = NULL,
     inat_res <- foo_inat(sources, x, y, p, z, hc, d, w, inatopts)
     ebird_res <- foo_ebird(sources, x, y, w, ebirdopts)
     ecoengine_res <- foo_ecoengine(sources, x, y, p, z, hc, d, w, ecoengineopts)
-    antweb_res <- foo_antweb(sources, x, y, s, z, hc, d, w, antwebopts)
     vertnet_res <- foo_vertnet(sources, x, y, hc, d, w, vertnetopts)
     idigbio_res <- foo_idigbio(sources, x, y, s, z, hc, d, w, idigbioopts)
     obis_res <- foo_obis(sources, x, y, s, z, hc, d, w, obisopts)
     ala_res <- foo_ala(sources, x, y, s, z, hc, d, w, alaopts)
     list(gbif = gbif_res, bison = bison_res, inat = inat_res, ebird = ebird_res,
-         ecoengine = ecoengine_res, antweb = antweb_res, vertnet = vertnet_res,
+         ecoengine = ecoengine_res, vertnet = vertnet_res,
          idigbio = idigbio_res, obis = obis_res, ala = ala_res)
   }
 
@@ -89,7 +92,6 @@ occ <- function(query = NULL, from = "gbif", limit = 500, start = NULL,
          inat = list(time = NULL, data = data_frame()),
          ebird = list(time = NULL, data = data_frame()),
          ecoengine = list(time = NULL, data = data_frame()),
-         antweb = list(time = NULL, data = data_frame()),
          vertnet = list(time = NULL, data = data_frame()),
          idigbio = list(time = NULL, data = data_frame()),
          obis = list(time = NULL, data = data_frame()),
@@ -236,19 +238,27 @@ occ <- function(query = NULL, from = "gbif", limit = 500, start = NULL,
     }
 
     if (any(grepl(srce, sources))) {
-      ggg <- list(meta = list(
-        source = srce,
-        time = time_null(pluck(tmp, c(srce, "time"))),
-        found = sum(unlist(pluck(tmp, c(srce, "found")))),
-        returned = sum(sapply(pluck(tmp, c(srce, "data")), NROW)),
-        type = type,
-        opts = optstmp),
-        data = tt)
+      ggg <- list(
+        meta = list(
+          source = srce,
+          time = time_null(pluck(tmp, c(srce, "time"))),
+          found = sum(unlist(pluck(tmp, c(srce, "found")))),
+          returned = sum(sapply(pluck(tmp, c(srce, "data")), NROW)),
+          type = type,
+          opts = optstmp,
+          errors = unlist(pluck(tmp, c(srce, "errors")))
+        ),
+        data = tt
+      )
       structure(ggg, class = "occdatind")
     } else {
-      ggg <- list(meta = list(source = srce, time = NULL, found = NULL, 
-                              returned = NULL,
-          type = NULL, opts = NULL), data = tt)
+      ggg <- list(
+        meta = list(
+          source = srce, time = NULL, found = NULL, returned = NULL,
+          type = NULL, opts = NULL, errors = NULL
+        ), 
+        data = tt
+      )
       structure(ggg, class = "occdatind")
     }
   }
@@ -258,13 +268,12 @@ occ <- function(query = NULL, from = "gbif", limit = 500, start = NULL,
   inat_sp <- getsplist("inat", inatopts)
   ebird_sp <- getsplist("ebird", ebirdopts)
   ecoengine_sp <- getsplist("ecoengine", ecoengineopts)
-  antweb_sp <- getsplist("antweb", antwebopts)
   vertnet_sp <- getsplist("vertnet", vertnetopts)
   idigbio_sp <- getsplist("idigbio", idigbioopts)
   obis_sp <- getsplist("obis", obisopts)
   ala_sp <- getsplist("ala", alaopts)
   p <- list(gbif = gbif_sp, bison = bison_sp, inat = inat_sp, ebird = ebird_sp,
-            ecoengine = ecoengine_sp, antweb = antweb_sp, vertnet = vertnet_sp,
+            ecoengine = ecoengine_sp, vertnet = vertnet_sp,
             idigbio = idigbio_sp, obis = obis_sp, ala = ala_sp)
   structure(p, class = "occdat", searched = from)
 }

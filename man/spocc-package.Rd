@@ -8,7 +8,7 @@
 \description{
 A programmatic interface to many species occurrence data
 sources, including GBIF, USGS's BISON, iNaturalist, Berkeley Ecoinformatics
-Engine, eBird, AntWeb, iDigBio, VertNet, OBIS, and ALA. Includes
+Engine, eBird, iDigBio, VertNet, OBIS, and ALA. Includes
 functionality for retrieving species occurrence data, and
 combining that data.
 }
@@ -38,7 +38,6 @@ BISON \tab \url{https://bison.usgs.gov/} \cr
 eBird \tab \url{http://ebird.org/content/ebird/} \cr
 iNaturalist \tab \url{http://www.inaturalist.org/} \cr
 Berkeley ecoengine \tab \url{https://ecoengine.berkeley.edu/} \cr
-AntWeb \tab \url{http://www.antweb.org/} \cr
 VertNet \tab \url{http://vertnet.org/} \cr
 iDigBio \tab \url{https://www.idigbio.org/} \cr
 OBIS \tab \url{http://www.iobis.org/} \cr
@@ -57,13 +56,15 @@ See \code{\link[=spocc_duplicates]{spocc_duplicates()}} for more.
 
 All data cleaning functionality is in a new package: \code{scrubr}
 (\url{https://github.com/ropensci/scrubr}).
-On CRAN: \url{https://cran.r-project.org/package=scrubr}
+On CRAN: \url{https://cran.r-project.org/package=scrubr}.
+See also package
+\url{https://cran.r-project.org/package=CoordinateCleaner}
 }
 
 \section{Make maps}{
 
 
-All mapping functionality is now in a separate package: \code{mapr`` (<https://github.com/ropensci/mapr>) (formerly known as}spoccutils`).
+All mapping functionality is now in a separate package: \code{mapr`` (<https://github.com/ropensci/mapr>) (formerly known as }spoccutils`).
 On CRAN: \url{https://cran.r-project.org/package=mapr}
 }
 

@@ -2,7 +2,7 @@
 #' 
 #' @description A programmatic interface to many species occurrence data 
 #' sources, including GBIF, USGS's BISON, iNaturalist, Berkeley Ecoinformatics 
-#' Engine, eBird, AntWeb, iDigBio, VertNet, OBIS, and ALA. Includes 
+#' Engine, eBird, iDigBio, VertNet, OBIS, and ALA. Includes 
 #' functionality for retrieving species occurrence data, and 
 #' combining that data.
 #' 
@@ -12,13 +12,12 @@
 #' many species occurrence databases (see below for a list). 
 #' 
 #' Other functions include:
-#' \itemize{
-#'  \item [occ2df()] - Combine results from `occ` into a 
+#' 
+#' - [occ2df()] - Combine results from `occ` into a 
 #'  data.frame
-#'  \item [fixnames()] - Change names to be the same for each taxon
-#'  \item [wkt_vis()] - Visualize WKT strings (used to define 
+#' - [fixnames()] - Change names to be the same for each taxon
+#' - [wkt_vis()] - Visualize WKT strings (used to define 
 #'  geometry based searches for some data sources) in an interactive map
-#' }
 #' 
 #' @section Currently supported species occurrence data sources:
 #'
@@ -29,7 +28,6 @@
 #' eBird \tab <http://ebird.org/content/ebird/> \cr
 #' iNaturalist \tab <http://www.inaturalist.org/> \cr
 #' Berkeley ecoengine \tab <https://ecoengine.berkeley.edu/> \cr
-#' AntWeb \tab <http://www.antweb.org/> \cr
 #' VertNet \tab <http://vertnet.org/> \cr
 #' iDigBio \tab <https://www.idigbio.org/> \cr
 #' OBIS \tab <http://www.iobis.org/> \cr
@@ -44,7 +42,9 @@
 #' 
 #' All data cleaning functionality is in a new package: `scrubr` 
 #' (<https://github.com/ropensci/scrubr>).
-#' On CRAN: <https://cran.r-project.org/package=scrubr>
+#' On CRAN: <https://cran.r-project.org/package=scrubr>. 
+#' See also package 
+#' <https://cran.r-project.org/package=CoordinateCleaner>
 #' 
 #' @section Make maps:
 #' 

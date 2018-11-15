@@ -1,6 +1,9 @@
 #' Look up options for parameters passed to each source
 #'
 #' @export
+#' 
+#' @family queries
+#' 
 #' @param from (character) Data source to get data from, any combination of 
 #' gbif, bison, ebird, idigibio and/or vertnet. Case doesn't matter. 
 #' inat is not included here, see that package's help docs.
@@ -9,7 +12,7 @@
 #' @return Opens up the documentation for the function that is used internally 
 #' within the occ function for each source.
 #' @details Any of the parameters passed to e.g. [rgbif::occ_data()] from the
-#' \code{rgbif} package can be passed in the associated gbifopts list 
+#' `rgbif` package can be passed in the associated gbifopts list 
 #' in [occ()]
 #'
 #' Note that the from parameter is lowercased within the function and is 
@@ -17,16 +20,12 @@
 #' strings too (e.g., 'rv' for 'rvertnet').
 #' 
 #' For some data sources we don't import the canonical package, but instead
-#' have our own intenral helper functions and the package in question is
+#' have our own internal helper functions and the package in question is
 #' not imported, but we do suggest seeing the help for the package on 
 #' their parameters:
 #' 
-#' \itemize{
-#'  \item **AntWeb**: `?AntWeb::aw_data`
-#'  \item **ecoengine**: `?ecoengine::ee_observations`
-#' }
+#' - **ecoengine**: `?ecoengine::ee_observations`
 #' 
-#' For others, 
 #' @examples \dontrun{
 #' # opens up documentation for this function
 #' occ_options()

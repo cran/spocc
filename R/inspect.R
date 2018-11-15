@@ -1,11 +1,16 @@
-#' Get more data on individual occurrences.
+#' Get more data on individual occurrences
+#' 
+#' Fetches the complete record, which may or may not be the same
+#' as requested through [occ()]. Some data providers have different ways
+#' to retrieve many occurrence records vs. single occurrence records - 
+#' and sometimes the results are more verbose when retrieving a 
+#' single occurrence record.
 #'
 #' @export
-#'
-#' @param x The output from \code{\link{occ}} call, output from call to
-#' \code{\link{occ2df}}, or an occurrence ID as a occkey class.
-#' @param from  (character) The data provider. One of gbif, bison, inat,
-#' antweb, ecoengine, or vertnet
+#' @param x The output from [occ()] call, output from call to
+#' [occ2df()], or an occurrence ID as a occkey class.
+#' @param from (character) The data provider. One of gbif, bison, inat,
+#' ecoengine, or vertnet
 #' @return A list, with each slot named for the data source, and then
 #' within data sources is a slot for each taxon, named by it's occurrence ID.
 #'
@@ -23,8 +28,6 @@
 #'
 #' # from occkeys
 #' key <- as.gbif(res$key[1])
-#' inspect(key)
-#' key <- as.antweb("amsat-94817")
 #' inspect(key)
 #'
 #' # idigbio
@@ -54,7 +57,6 @@ inspect.occkey <- function(x, from="gbif"){
          gbifkey = as.gbif(x),
          bisonkey = as.bison(x),
          ecoenginekey = as.ecoengine(x),
-         antwebkey = as.antweb(x),
          idigbiokey = as.idigbio(x))
 }
 
@@ -67,7 +69,6 @@ make_df <- function(x){
              gbif = as.gbif(obj[[i]]),
              bison = as.bison(obj[[i]]),
              ecoengine = as.ecoengine(obj[[i]]),
-             antweb = as.antweb(obj[[i]]),
              idigbio = as.idigbio(obj[[i]])
       )
   }

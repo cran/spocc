@@ -36,3 +36,10 @@ library("data.table")
 rbindlist(tt, use.names = TRUE, fill = TRUE)
 }
 }
+\seealso{
+Other coercion: \code{\link{as.ala}},
+  \code{\link{as.bison}}, \code{\link{as.ecoengine}},
+  \code{\link{as.gbif}}, \code{\link{as.idigbio}},
+  \code{\link{as.inat}}, \code{\link{as.vertnet}}
+}
+\concept{coercion}
