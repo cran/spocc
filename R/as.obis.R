@@ -22,7 +22,8 @@
 #' as.obis(tt[1:2])
 #'
 #' library("data.table")
-#' rbindlist(tt, use.names = TRUE, fill = TRUE)
+#' rbindlist(lapply(tt, "[[", "results"),
+#'   use.names = TRUE, fill = TRUE)
 #' }
 as.obis <- function(x, ...) UseMethod("as.obis")
 
@@ -42,7 +43,7 @@ as.obis.occdat <- function(x, ...) {
 as.obis.data.frame <- function(x, ...) make_obis_df(x, ...)
 
 #' @export
-as.obis.numeric <- function(x, ...) make_obis(x, ...)
+as.obis.character <- function(x, ...) make_obis(x, ...)
 
 #' @export
 as.obis.list <- function(x, ...) {

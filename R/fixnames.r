@@ -5,8 +5,11 @@
 #' collapses them to the same string - making data easier to deal with for 
 #' making maps, etc. 
 #' 
-#' @export
+#' This function is being moved to `scrubr::fix_names`; `fixnames` will 
+#' be removed in the next version of this package.
 #' 
+#' @export
+#' @rdname fixnames-deprecated
 #' @param obj An object of class occdat
 #' @param how One of a few different methods: 
 #' \itemize{
@@ -38,13 +41,15 @@
 #' fixnames(dat, how="supplied", 
 #'  namevec = c("Danaus","Accipiter","Pinus"))$ecoengine$data$Danaus_plexippus
 #' }
-
-fixnames <- function(obj, how="shortest", namevec = NULL){
+fixnames <- function(obj, how="shortest", namevec = NULL) {
+  .Deprecated("scrubr::fix_names", 
+    msg = "fixnames will be removed in the next version; see scrubr::fix_names")
   how <- match.arg(how, choices = c("shortest", "query", "supplied"))
-  foo <- function(z){
-    if(how=="shortest"){ # shortest
-      z$data <- lapply(z$data, function(x, how){
-        if(is.factor(x$name)){x$name <- as.character(x$name)}
+  foo <- function(z) {
+    if (how == "shortest") { # shortest
+      z$data <- lapply(z$data, function(x, how) {
+        if (NROW(x) == 0) return(x)
+        if (is.factor(x$name)) x$name <- as.character(x$name)
         uniqnames <- unique(x$name)
         lengths <- vapply(uniqnames, function(y) length(strsplit(y, " ")[[1]]), 
                           numeric(1))
@@ -54,8 +59,8 @@ fixnames <- function(obj, how="shortest", namevec = NULL){
         }
         x
       })
-    } else if (how=="query"){ # query
-      for(i in seq_along(z$data)){
+    } else if (how == "query") { # query
+      for (i in seq_along(z$data)) {
         newname <- gsub("_", " ", names(z$data)[i])[[1]]
         z$data[[i]]$name <- rep(newname, nrow(z$data[[i]]))
       }
@@ -66,7 +71,7 @@ fixnames <- function(obj, how="shortest", namevec = NULL){
       if (!length(namevec) == length(z$data)) 
         stop("The supplied name vector must be the same length as the length of names you originally queried in occ function")
       
-      for(i in seq_along(z$data)){
+      for(i in seq_along(z$data)) {
         z$data[[i]]$name <- rep(namevec[i], nrow(z$data[[i]]))
       }
     }

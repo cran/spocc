@@ -88,7 +88,7 @@ foo_gbif <- function(sources, query, limit, start, geometry, has_coords,
             dat <- add_latlong_if_missing(dat)
             dat <- stand_dates(dat, "gbif")
             list(time = time, found = out$meta$count,
-                 data = as_data_frame(dat), opts = opts)
+                 data = as_tibble(dat), opts = opts)
           }
         }
       }
@@ -148,7 +148,7 @@ foo_ecoengine <- function(sources, query, limit, page, geometry, has_coords,
       names(out)[names(out) == 'scientific_name'] <- "name"
       out <- add_latlong_if_missing(out)
       out <- stand_dates(out, "ecoengine")
-      list(time = time, found = out_ee$results, data = as_data_frame(out),
+      list(time = time, found = out_ee$results, data = as_tibble(out),
            opts = opts)
     }
   } else {
@@ -222,7 +222,7 @@ foo_bison <- function(sources, query, limit, start, geometry, date,
       } else {
         out$summary$total
       }
-      list(time = time, found = found, data = as_data_frame(dat), opts = opts)
+      list(time = time, found = found, data = as_tibble(dat), opts = opts)
     }
   } else {
     emptylist(opts)
@@ -237,11 +237,11 @@ foo_inat <- function(sources, query, limit, page, geometry, has_coords,
     opts <- limit_alias(opts, "inat")
     opts$geo <- has_coords
     time <- now()
-    opts$query <- query
-    if (!'maxresults' %in% names(opts)) opts$maxresults <- limit
-    if (!'page' %in% names(opts)) opts$page <- page
+    opts$taxon_name <- query
+    if (!"maxresults" %in% names(opts)) opts$maxresults <- limit
+    if (!"page" %in% names(opts)) opts$page <- page
     if (!is.null(geometry)) {
-      opts$bounds <- if (grepl('POLYGON', paste(as.character(geometry),
+      opts$bounds <- if (grepl("POLYGON", paste(as.character(geometry),
                                                 collapse = " "))) {
         # flip lat  and long spots in the bounds vector for inat
         temp <- wkt2bbox(geometry)
@@ -258,18 +258,26 @@ foo_inat <- function(sources, query, limit, page, geometry, has_coords,
     opts$callopts <- callopts
     out <- tryCatch(do.call("spocc_inat_obs", opts), error = function(e) e)
     if (!is.data.frame(out$data) || inherits(out, "simpleError")) {
-      throw_error("inat", 
+      throw_error("inat",
         sprintf("No records returned in INAT for %s", query))
       throw_error("inat", out$message)
       emptylist(opts, out$message)
     } else{
       res <- out$data
       res$prov <- rep("inat", nrow(res))
-      res <- rename(res, c('taxon.name' = 'name'))
+      res <- rename(res, c("taxon.name" = "name"))
+      # pull out lon/lat from geojson field
+      cds <- res$geojson.coordinates
+      lons <- sapply(cds, "[[", 1)
+      lons[vapply(lons, is.null, logical(1))] <- NA_character_
+      res$longitude <- unlist(lons)
+      lats <- sapply(cds, "[[", 2)
+      lats[vapply(lats, is.null, logical(1))] <- NA_character_
+      res$latitude <- unlist(lats)
       res <- stand_latlon(res)
       res <- add_latlong_if_missing(res)
       res <- stand_dates(res, "inat")
-      list(time = time, found = out$meta$found, data = as_data_frame(res),
+      list(time = time, found = out$meta$found, data = as_tibble(res),
            opts = opts)
     }
   } else {
@@ -314,7 +322,7 @@ foo_ebird <- function(sources, query, limit, callopts, opts) {
       out <- stand_latlon(out)
       out <- add_latlong_if_missing(out)
       out <- stand_dates(out, "ebird")
-      list(time = time, found = NULL, data = as_data_frame(out), opts = opts)
+      list(time = time, found = NULL, data = as_tibble(out), opts = opts)
     }
   } else {
     emptylist(opts)
@@ -363,7 +371,7 @@ foo_vertnet <- function(sources, query, limit, has_coords, date, callopts, opts)
       names(df) <- tolower(names(df))
       list(time = time,
            found = as.numeric(gsub(">|<", "", out$meta$matching_records)),
-           data = as_data_frame(df), opts = opts)
+           data = as_tibble(df), opts = opts)
     }
   } else {
     emptylist(opts)
@@ -434,7 +442,7 @@ foo_idigbio <- function(sources, query, limit, start, geometry, has_coords,
       out <- add_latlong_if_missing(out)
       out <- stand_dates(out, "idigbio")
       list(time = time, found = attr(out, "itemCount"),
-           data = as_data_frame(out), opts = opts)
+           data = as_tibble(out), opts = opts)
     }
   } else {
     emptylist(opts)
@@ -464,17 +472,17 @@ foo_obis <- function(sources, query, limit, start, geometry, has_coords,
       opts$enddate <- date[2]
     }
 
-    if (!"limit" %in% names(opts)) opts$limit <- limit
+    if (!"limit" %in% names(opts)) opts$size <- limit
     if (!'offset' %in% names(opts)) opts$offset <- start
 
     opts <- c(opts, callopts)
 
     tmp <- tryCatch(do.call(obis_search, opts), error = function(e) e)
-    if (inherits(tmp, "simpleError") || "message" %in% names(tmp)) {
+    if (inherits(tmp, "simpleError") || "error" %in% names(tmp)) {
       throw_error("obis", 
         sprintf("No records returned in OBIS for %s", query))
-      throw_error("obis", tmp$message)
-      emptylist(opts, tmp$message)
+      throw_error("obis", tmp$error)
+      emptylist(opts, tmp$error)
     } else {
       if (!"results" %in% names(tmp)) {
         warning(sprintf("No records returned in OBIS for %s", query))
