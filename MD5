@@ -1,7 +1,7 @@
-435c9a03df19d34fd4cb264073ec3625 *DESCRIPTION
+b3ff16d48cf8cc633d2102ca77b04a8c *DESCRIPTION
 de9532c5aeb8082a5fc9cbee02186d6f *LICENSE
 a2e57f7a539cbad172f62d3480380845 *NAMESPACE
-f014fbdd4d44d84031e97e1c00d499de *NEWS.md
+c0196ed68940707a5f83a63c2f88649f *NEWS.md
 dc47e419a5f43efd078f371b782afb9e *R/ala_helpers.R
 c5be1ebec024717c7e6a42c8bcc347cb *R/as.ala.R
 2289de163b98395128fef54e56519363 *R/as.bison.R
@@ -34,7 +34,7 @@ a284d1834026005283e8d7e4179bc4ad *R/rename.R
 1fe58f45dec2982fb7b1d58df9177bee *R/wkt_bbox.R
 f866d2799965825b3ed86989aa332cd9 *R/wkt_vis.r
 69616b74f1fcfd149f2f5d9830c827c3 *R/zzz.r
-cead848e9d54d468e5cc2b0e00fa9c46 *README.md
+d2f1f0d560a2814c7c9eb6de2d4f44c6 *README.md
 8421318001369233608318717414d77d *build/vignette.rds
 6e072643d2f095267e250e3980ede24e *inst/doc/spocc.Rmd
 9ed77b1872a9e1e6fd0f1994b0bff086 *inst/doc/spocc.html
@@ -62,7 +62,7 @@ d63a8f9531f4e2157c8f2219a4dd6847 *man/spocc_duplicates.Rd
 103d3f476f9c0179582b9ca294cc8ec8 *man/spocc_objects.Rd
 667b9f73b15cb92e92a61016d48053f7 *man/wkt_vis.Rd
 63dad2d657b041f2751e2276d1edc697 *tests/fixtures/has_coords_gbif.yml
-328f7e3892d0430d695aa8395d3f54f6 *tests/fixtures/identifier_based_searches.yml
+5f64c6f4ea0f08b22707ab331d21320e *tests/fixtures/identifier_based_searches.yml
 c4b5f8e62568fd2e16ea46dbb1972cb0 *tests/fixtures/occ2df.yml
 ef396436628115bf2d29a984f0b1b626 *tests/fixtures/occ2df_with_eventdate_gone.yml
 bae47f14c43c5ff8819f4951ed2bf0e5 *tests/fixtures/occ_geometry_ecoengine.yml
@@ -80,10 +80,10 @@ b5864aa932ee709af01bae2dae198b45 *tests/fixtures/occ_opts_used.yml
 9757c042cea15672b85d19b6edd57046 *tests/fixtures/occ_opts_used_no_results.yml
 4fc746ecb17a14594983d7cb1c3ca898 *tests/fixtures/occ_pagination.yml
 7d37a80ad06cc4d692dc39ec431700c7 *tests/fixtures/occ_vertnet.yml
-c2efa1e0258a3b56e90b4889a99a565b *tests/fixtures/taxize_integration_1id.yml
-1bad73962aeec7ddd90ee7c6aff75661 *tests/fixtures/taxize_integration_get_gbifid.yml
-5418ee6cf46b341a24bf43e79ebaa6e0 *tests/fixtures/taxize_integration_get_tsn.yml
-3378a1611c4aa4b8b2a33d5a3c8e2e4b *tests/fixtures/taxize_integration_morethan1id.yml
+75ebb87a8a29e4ae7fefdf91dc5c09cb *tests/fixtures/taxize_integration_1id.yml
+38ee7eca1a3f8910838c23d6a69338f0 *tests/fixtures/taxize_integration_get_gbifid.yml
+ab8a8b177098c8a95d4b23291a6bfe67 *tests/fixtures/taxize_integration_get_tsn.yml
+95cec39dd949bbbfeb4811c32b709f12 *tests/fixtures/taxize_integration_morethan1id.yml
 c0de55be578d2f3575981ba0cf5793d3 *tests/fixtures/taxize_integration_morethan1id_indexed1.yml
 57398246ecadfcb36a6edd1dd94bcc3c *tests/testthat.R
 564492dd5d8db357cffdd6e3a300b71a *tests/testthat/helper-spocc.R
@@ -99,12 +99,12 @@ c5b6cee92525e1c8854f489f0cb89cc5 *tests/testthat/ids8.rda
 5911bcb848293c91383a5c09ab6055a3 *tests/testthat/test-common_params.R
 a5c19d61afcda96e4898b0819e8acfc9 *tests/testthat/test-geometry.R
 131ac3faba01ef92e764200bcacccfe4 *tests/testthat/test-has_coords.R
-7323b60145553f07cfc20645a0f3c649 *tests/testthat/test-idbasedsearch.R
+f268512af3f90ad50b6b7c0fe0826e67 *tests/testthat/test-idbasedsearch.R
 09f9f29b8984b1ac31ce2a4c6e2b79c5 *tests/testthat/test-occ.R
 80dd32bd8198c77d49bf96f142f6ac7d *tests/testthat/test-occ2df.R
 0a0609ec2119ba7197971a54373ae788 *tests/testthat/test-options.R
 fae30a5c2a8154e165e443925e2d8ba5 *tests/testthat/test-paging.R
-c728c989bad3baa99b79eca1b64f5228 *tests/testthat/test-taxize-integration.R
+780647c2455d246b9f254e215a56484f *tests/testthat/test-taxize-integration.R
 b5857316e96eec2ff45ba13b9a13eb60 *tests/testthat/test-wkt_vis.R
 5965e637fa5549f5c5eec0478ffa1429 *vignettes/img/baseplots.png
 e6ed39573e905e901c02085e58d6ff33 *vignettes/img/ggplot2.png

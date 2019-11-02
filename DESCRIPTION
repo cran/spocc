@@ -8,7 +8,7 @@ Description: A programmatic interface to many species occurrence data sources,
     System ('OBIS'), and Atlas of Living Australia ('ALA'). Includes
     functionality for retrieving species occurrence data, and combining
     those data.
-Version: 1.0.0
+Version: 1.0.2
 License: MIT + file LICENSE
 Authors@R: 
     c(person(given = "Scott",
@@ -44,11 +44,11 @@ X-schema.org-keywords: specimens, API, web-services, occurrences,
         Ecoengine, iDigBio, OBIS, ALA
 X-schema.org-isPartOf: https://ropensci.org
 NeedsCompilation: no
-Packaged: 2019-10-22 19:18:25 UTC; sckott
+Packaged: 2019-11-01 20:31:44 UTC; sckott
 Author: Scott Chamberlain [aut, cre] (<https://orcid.org/0000-0003-1444-9135>),
   Karthik Ram [ctb],
   Ted Hart [ctb],
   rOpenSci [fnd] (https://ropensci.org/)
 Maintainer: Scott Chamberlain <myrmecocystus@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-10-22 19:50:02 UTC
+Date/Publication: 2019-11-02 09:30:02 UTC
