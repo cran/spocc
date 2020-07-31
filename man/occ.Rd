@@ -46,9 +46,10 @@ needed.}
 \item{start, page}{(integer) Record to start at or page to start at. See \code{Paging} in
 Details for how these parameters are used internally. Optional}
 
-\item{geometry}{(character or nmeric) One of a Well Known Text (WKT) object or a vector of
-length 4 specifying a bounding box. This parameter searches for occurrences inside a
-box given as a bounding box or polygon described in WKT format. A WKT shape written as
+\item{geometry}{(character or nmeric) One of a Well Known Text (WKT) object, a vector of
+length 4 specifying a bounding box, an sp object (SpatialPolygons or SpatialPolygonsDataFrame),
+or an sf object (sfg, sfc, or sf). This parameter searches for occurrences inside a
+polygon - converted to a polygon from whatever user input is given. A WKT shape written as
 \verb{POLYGON((30.1 10.1, 20 40, 40 40, 30.1 10.1))} would be queried as is,
 i.e. http://bit.ly/HwUSif. See Details for more examples of WKT objects. The format of a
 bounding box is \verb{min-longitude, min-latitude, max-longitude, max-latitude}. Geometry
@@ -582,11 +583,11 @@ occ(from = "ecoengine", ecoengineopts = list(limit = 3))
 # taxize integration
 ## You can pass in taxonomic identifiers
 library("taxize")
-(ids <- get_ids(names=c("Chironomus riparius","Pinus contorta"), db = c('itis','gbif')))
+(ids <- get_ids(c("Chironomus riparius","Pinus contorta"), db = c('itis','gbif')))
 occ(ids = ids[[1]], from='bison', limit=20)
 occ(ids = ids, from=c('bison','gbif'), limit=20)
 
-(ids <- get_ids(names="Chironomus riparius", db = 'gbif'))
+(ids <- get_ids("Chironomus riparius", db = 'gbif'))
 occ(ids = ids, from='gbif', limit=20)
 
 (ids <- get_gbifid("Chironomus riparius"))
@@ -621,8 +622,47 @@ sppoly_df <- SpatialPolygonsDataFrame(sppoly,
 out <- occ(geometry = sppoly_df, limit=50)
 out$gbif$data
 
+## sf classes
+library("sp")
+library("sf")
+one <- Polygon(cbind(c(91,90,90,91), c(30,30,32,30)))
+spone = Polygons(list(one), "s1")
+sppoly = SpatialPolygons(list(spone), as.integer(1))
+
+## single polygon in a sf class
+x <- st_as_sf(sppoly)
+out <- occ(geometry = x, limit=50)
+out$gbif$data
+mapr::map_leaflet(out)
+
+## single polygon in a sfc class
+x <- st_as_sf(sppoly)
+out <- occ(geometry = x[[1]], limit=50)
+out$gbif$data
+
+## single polygon in a sf POLYGON class
+x <- st_as_sf(sppoly)
+x <- unclass(x[[1]])[[1]]
+class(x)
+out <- occ(geometry = x, limit=50)
+out$gbif$data
+
+## two polygons in an sf class
+one <- Polygon(cbind(c(-121.0,-117.9,-121.0,-121.0), c(39.4, 37.1, 35.1, 39.4)))
+two <- Polygon(cbind(c(-123.0,-121.2,-122.3,-124.5,-123.5,-124.1,-123.0),
+                     c(44.8,42.9,41.9,42.6,43.3,44.3,44.8)))
+spone = Polygons(list(one), "s1")
+sptwo = Polygons(list(two), "s2")
+sppoly = SpatialPolygons(list(spone, sptwo), 1:2)
+sppoly_df <- SpatialPolygonsDataFrame(sppoly, 
+   data.frame(a=c(1,2), b=c("a","b"), c=c(TRUE,FALSE),
+   row.names=row.names(sppoly)))
+x <- st_as_sf(sppoly_df)
+out <- occ(geometry = x, limit=50)
+out$gbif$data
+
+
 # curl debugging
-library('httr')
 occ(query = 'Accipiter striatus', from = 'gbif', limit=10, 
  callopts=list(verbose = TRUE))
 occ(query = 'Accipiter striatus', from = 'bison', limit=10, 
@@ -691,6 +731,7 @@ res$obis
 geometry <- "POLYGON((8.98 48.05,15.66 48.05,15.66 45.40,8.98 45.40,8.98 48.05))"
 (res <- occ(from = 'obis', geometry = geometry, limit = 50))
 res$obis
+
 ## Pass in spatial classes
 library("sp")
 one <- Polygon(cbind(c(45,30,30,45), c(35,35,30,30)))

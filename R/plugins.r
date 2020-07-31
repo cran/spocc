@@ -339,7 +339,7 @@ foo_vertnet <- function(sources, query, limit, has_coords, date, callopts, opts)
     if (!is.null(has_coords)) {
       opts$mappable <- has_coords
     }
-    opts$query <- query
+    opts$scientificname <- query
     opts$messages <- FALSE
     if (!is.null(date)) {
       if (length(date) != 2) stop("'date' for Vertnet must be length 2")
@@ -554,7 +554,7 @@ foo_ala <- function(sources, query, limit, start, geometry, has_coords,
           out <- stand_latlon(out)
           out <- add_latlong_if_missing(out)
           out <- stand_dates(out, "ala")
-          list(time = time, found = tmp$count, data = out, opts = opts)
+          list(time = time, found = tmp$totalRecords, data = out, opts = opts)
         }
       }
     }
