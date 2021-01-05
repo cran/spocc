@@ -22,15 +22,14 @@
 #'
 #' \tabular{ll}{
 #' Provider \tab Web \cr
-#' GBIF \tab <http://www.gbif.org/> \cr
-#' BISON \tab https://bison.usgs.gov/ \cr
-#' eBird \tab <http://ebird.org/content/ebird/> \cr
-#' iNaturalist \tab <http://www.inaturalist.org/> \cr
-#' Berkeley ecoengine \tab <https://ecoengine.berkeley.edu/> \cr
-#' VertNet \tab <http://vertnet.org/> \cr
-#' iDigBio \tab <https://www.idigbio.org/> \cr
-#' OBIS \tab <http://www.iobis.org/> \cr
-#' ALA \tab <http://www.ala.org.au/>
+#' GBIF \tab  \cr
+#' BISON \tab \cr
+#' eBird \tab  \cr
+#' iNaturalist \tab  \cr
+#' VertNet \tab  \cr
+#' iDigBio \tab  \cr
+#' OBIS \tab  \cr
+#' ALA \tab 
 #' }
 #' 
 #' @section Duplicates:
@@ -40,16 +39,16 @@
 #' @section Clean data:
 #' 
 #' All data cleaning functionality is in a new package: `scrubr` 
-#' (<https://github.com/ropensci/scrubr>).
-#' On CRAN: <https://cran.r-project.org/package=scrubr>. 
+#' ().
+#' On CRAN: . 
 #' See also package 
-#' <https://cran.r-project.org/package=CoordinateCleaner>
+#' 
 #' 
 #' @section Make maps:
 #' 
 #' All mapping functionality is now in a separate package: `mapr``
-#' (<https://github.com/ropensci/mapr>) (formerly known as `spoccutils`).
-#' On CRAN: <https://cran.r-project.org/package=mapr>
+#' () (formerly known as `spoccutils`).
+#' On CRAN: 
 #'
 #' @importFrom jsonlite toJSON
 #' @importFrom utils browseURL head read.csv data setTxtProgressBar 
@@ -66,6 +65,6 @@
 #' @name spocc-package
 #' @aliases spocc
 #' @docType package
-#' @author Scott Chamberlain \email{myrmecocystus@@gmail.com}
+#' @author Scott Chamberlain
 #' @keywords package
 NULL

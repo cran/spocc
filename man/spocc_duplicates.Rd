@@ -18,8 +18,8 @@ will provide a consistent way to work with occurrence data, making
 analyses and vizualizations more repeatable across providers.
 
 For cleaning data, see packages \code{scrubr}
-(\url{https://cran.r-project.org/package=scrubr}) and \code{CoordinateCleaner}
-(\url{https://cran.r-project.org/package=CoordinateCleaner})
+() and \code{CoordinateCleaner}
+()
 
 Do get in touch with us if you have concerns, have ideas for eliminating
 duplicates

@@ -43,7 +43,6 @@
 #' )
 bbox2wkt <- function(minx=NA, miny=NA, maxx=NA, maxy=NA, bbox=NULL) {
   if (is.null(bbox)) bbox <- c(minx, miny, maxx, maxy)
-  # wicket::bounding_wkt(values = bbox)
   stopifnot(is.numeric(as.numeric(bbox)))
   bbox_template <- 'POLYGON((%s %s,%s %s,%s %s,%s %s,%s %s))'
   sprintf(bbox_template, 
@@ -55,10 +54,10 @@ bbox2wkt <- function(minx=NA, miny=NA, maxx=NA, maxy=NA, bbox=NULL) {
   )
 }
 
-#' @param wkt A Well Known Text object.
+#' @param wkt A Well Known Text string
 #' @export
 #' @family bbox
 #' @rdname bbox2wkt
-wkt2bbox <- function(wkt){
-  wicket::wkt_bounding(wkt)
+wkt2bbox <- function(wkt) {
+  wellknown::wkt_bounding(wkt)
 }

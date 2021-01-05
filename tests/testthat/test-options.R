@@ -1,15 +1,13 @@
 context("Occ options work")
 
+skip_on_cran()
+
 test_that("passing in options to occ works", {
   skip_on_cran()
   
   vcr::use_cassette("occ_options_gbif", {
     opts1 <- occ(query = "Accipiter striatus", from = "gbif",
                  gbifopts = list(hasCoordinate = TRUE), limit = 5)
-  }, preserve_exact_body_bytes = TRUE)
-  vcr::use_cassette("occ_options_ecoengine", {
-    opts2 <- occ(query = "Accipiter", from = "ecoengine",
-                 ecoengineopts = list(county = "Sonoma"), limit = 5)
   }, preserve_exact_body_bytes = TRUE)
   # vcr::use_cassette("occ_options_inat", { 
   #   opts3 <- occ(query = "Danaus plexippus", from = "inat",
@@ -23,7 +21,6 @@ test_that("passing in options to occ works", {
   #              vertnetopts = list(year = 2010), limit = 5)
 
   expect_is(opts1, "occdat")
-  expect_is(opts2, "occdat")
   # expect_is(opts3, "occdat")
   expect_is(opts5, "occdat")
   # expect_is(opts6, "occdat")

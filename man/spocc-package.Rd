@@ -32,15 +32,14 @@ geometry based searches for some data sources) in an interactive map
 
 \tabular{ll}{
 Provider \tab Web \cr
-GBIF \tab \url{http://www.gbif.org/} \cr
-BISON \tab https://bison.usgs.gov/ \cr
-eBird \tab \url{http://ebird.org/content/ebird/} \cr
-iNaturalist \tab \url{http://www.inaturalist.org/} \cr
-Berkeley ecoengine \tab \url{https://ecoengine.berkeley.edu/} \cr
-VertNet \tab \url{http://vertnet.org/} \cr
-iDigBio \tab \url{https://www.idigbio.org/} \cr
-OBIS \tab \url{http://www.iobis.org/} \cr
-ALA \tab \url{http://www.ala.org.au/}
+GBIF \tab  \cr
+BISON \tab \cr
+eBird \tab  \cr
+iNaturalist \tab  \cr
+VertNet \tab  \cr
+iDigBio \tab  \cr
+OBIS \tab  \cr
+ALA \tab
 }
 }
 
@@ -54,20 +53,19 @@ See \code{\link[=spocc_duplicates]{spocc_duplicates()}} for more.
 
 
 All data cleaning functionality is in a new package: \code{scrubr}
-(\url{https://github.com/ropensci/scrubr}).
-On CRAN: \url{https://cran.r-project.org/package=scrubr}.
+().
+On CRAN: .
 See also package
-\url{https://cran.r-project.org/package=CoordinateCleaner}
 }
 
 \section{Make maps}{
 
 
-All mapping functionality is now in a separate package: \verb{mapr`` (<https://github.com/ropensci/mapr>) (formerly known as }spoccutils`).
-On CRAN: \url{https://cran.r-project.org/package=mapr}
+All mapping functionality is now in a separate package: \verb{mapr`` () (formerly known as }spoccutils`).
+On CRAN:
 }
 
 \author{
-Scott Chamberlain \email{myrmecocystus@gmail.com}
+Scott Chamberlain
 }
 \keyword{package}

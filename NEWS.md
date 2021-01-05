@@ -1,3 +1,20 @@
+spocc 1.2.0
+===========
+
+### DEFUNCT
+
+* `as.ecoengine()` is now defunct. `ecoengine` R pkg wasn't used, we used internal code, but since `ecoengine` R is archived since Feb 2020, probably best to remove here (#239)
+
+### MINOR IMPROVEMENTS
+
+* using `wellknown` now instead of `wicket` for Well-known text manipulation (#235)
+
+### BUG FIXES
+
+* fix failing checks (#240)
+* bug fixed in ecoengine bbox - but now ecoengine removed, see above (#234)
+
+
 spocc 1.1.0
 ===========
 
@@ -293,7 +310,7 @@ spocc 0.3.0
 
 ### NEW FEATURES
 
-* Mapping functions all gone, and put into a new package `spoccutils` (https://github.com/ropensci/spoccutils) (#132)
+* Mapping functions all gone, and put into a new package `spoccutils` (#132)
 * `occ()` gains new parameter `has_coords` - a global parameter (except for ebird and bison) to return only records with lat/long data. (#128)
 * `type` (#134) and `rank` (#133) parameters dropped from `occ()` 
 * When object returned by `occ()` is printed, we now include a message that total count of records found (not returned) is not completely known __if ebird is included__, because eBird does not include data on records found on their servers with requests to their API (#111)

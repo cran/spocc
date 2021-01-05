@@ -15,8 +15,8 @@
 #' analyses and vizualizations more repeatable across providers.
 #' 
 #' For cleaning data, see packages `scrubr` 
-#' (<https://cran.r-project.org/package=scrubr>) and `CoordinateCleaner` 
-#' (<https://cran.r-project.org/package=CoordinateCleaner>)
+#' () and `CoordinateCleaner` 
+#' ()
 #' 
 #' Do get in touch with us if you have concerns, have ideas for eliminating 
 #' duplicates
