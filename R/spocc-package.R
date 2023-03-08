@@ -1,7 +1,7 @@
 #' @title Interface to many species occurrence data sources
 #' 
 #' @description A programmatic interface to many species occurrence data 
-#' sources, including GBIF, USGS's BISON, iNaturalist, Berkeley Ecoinformatics 
+#' sources, including GBIF, iNaturalist, Berkeley Ecoinformatics 
 #' Engine, eBird, iDigBio, VertNet, OBIS, and ALA. Includes 
 #' functionality for retrieving species occurrence data, and 
 #' combining that data.
@@ -22,14 +22,13 @@
 #'
 #' \tabular{ll}{
 #' Provider \tab Web \cr
-#' GBIF \tab  \cr
-#' BISON \tab \cr
-#' eBird \tab  \cr
-#' iNaturalist \tab  \cr
-#' VertNet \tab  \cr
-#' iDigBio \tab  \cr
-#' OBIS \tab  \cr
-#' ALA \tab 
+#' GBIF \tab <https://www.gbif.org/> \cr
+#' eBird \tab <http://ebird.org/content/ebird/> \cr
+#' iNaturalist \tab <https://www.inaturalist.org/> \cr
+#' VertNet \tab <http://vertnet.org/> \cr
+#' iDigBio \tab <https://www.idigbio.org/> \cr
+#' OBIS \tab <https://www.iobis.org/> \cr
+#' ALA \tab <https://www.ala.org.au/>
 #' }
 #' 
 #' @section Duplicates:
@@ -38,17 +37,17 @@
 #' 
 #' @section Clean data:
 #' 
-#' All data cleaning functionality is in a new package: `scrubr` 
-#' ().
-#' On CRAN: . 
+#' All data cleaning functionality is in as archived package: `scrubr` 
+#' (<https://github.com/ropensci-archive/scrubr>).
+#' On CRAN: <https://cran.r-project.org/src/contrib/Archive/scrubr/>. 
 #' See also package 
-#' 
+#' <https://cran.r-project.org/package=CoordinateCleaner>
 #' 
 #' @section Make maps:
 #' 
 #' All mapping functionality is now in a separate package: `mapr``
-#' () (formerly known as `spoccutils`).
-#' On CRAN: 
+#' (<https://github.com/ropensci/mapr>) (formerly known as `spoccutils`).
+#' On CRAN: <https://cran.r-project.org/package=mapr>
 #'
 #' @importFrom jsonlite toJSON
 #' @importFrom utils browseURL head read.csv data setTxtProgressBar 
@@ -58,7 +57,6 @@
 #' @importFrom lubridate now ymd_hms ymd_hm ydm_hm ymd as_date
 #' @importFrom rgbif occ_data occ_get name_lookup
 #' @importFrom rebird ebirdregion ebirdgeo
-#' @importFrom rbison bison_solr bison bison_tax
 #' @importFrom rvertnet vertsearch
 #' @importFrom ridigbio idig_search_records idig_view_records
 #' @importFrom whisker whisker.render
