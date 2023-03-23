@@ -1,7 +1,7 @@
-9f08ac93cb517c67731e4c9088b931ce *DESCRIPTION
+9da015bc8df5636c482efefdab2f6006 *DESCRIPTION
 ae9eebb8e6b4268115c8ef982c37b485 *LICENSE
-f28187c6c7b5c8b4c9797220ae30d704 *NAMESPACE
-137ca2cb28346d8e1f5262fa39ef9d5e *NEWS.md
+7aeb58026dd85787f4e06de81112dcf7 *NAMESPACE
+9a3ec5e4f47d45cc561c5dcc004456b4 *NEWS.md
 dc47e419a5f43efd078f371b782afb9e *R/ala_helpers.R
 c5be1ebec024717c7e6a42c8bcc347cb *R/as.ala.R
 b407b8d40223591fca5e9455be6c5967 *R/as.ecoengine.R
@@ -31,8 +31,8 @@ aa9ccf121a8a511bd7b8ea351f649b8f *R/plugin_helpers.R
 a284d1834026005283e8d7e4179bc4ad *R/rename.R
 b087233339eb532529b303dc74b58425 *R/spocc-package.R
 7967ee84ce27f68424ed4e715a8990d3 *R/spocc_duplicates.R
-7a216e9a5130d07190533488e240e941 *R/wkt_bbox.R
-dd1b9a43a4a449315d783df8916e8557 *R/wkt_vis.r
+c783ff07f10af4b784381b0ecf7aceee *R/wkt_bbox.R
+3973cbb20a3b7bb90a295f4a0c5a4d8c *R/wkt_vis.r
 69616b74f1fcfd149f2f5d9830c827c3 *R/zzz.r
 41f615fbe866c8c06f88e55af078527c *man/as.ala.Rd
 4382b08f94c3fbcf021c700a1f5c7f7b *man/as.ecoengine-defunct.Rd
