@@ -1,12 +1,12 @@
-1adc94898fb02824be59e92534b9c2ac *DESCRIPTION
+6cddd7b9778f8b8878083d6cf6d88089 *DESCRIPTION
 ae9eebb8e6b4268115c8ef982c37b485 *LICENSE
 244b2030aa3399424737fb197296df73 *NAMESPACE
-abd47709ae0214ac5b2f638201b4c019 *NEWS.md
+60ebae6f1b13fe8f5aabadb1309f482a *NEWS.md
 dc47e419a5f43efd078f371b782afb9e *R/ala_helpers.R
 c5be1ebec024717c7e6a42c8bcc347cb *R/as.ala.R
 b407b8d40223591fca5e9455be6c5967 *R/as.ecoengine.R
 7078dddd80c2bb12b7b8a242b07ef43d *R/as.gbif.R
-e76de85fe68da7e1f2ae9e14b3d18647 *R/as.idigbio.R
+c1704c0222be234551d4fee6f955bace *R/as.idigbio.R
 aa3600b932312a8a01081e3328c7ff4e *R/as.inat.R
 1080a7ed8394b2d3772bdd3aa290d22f *R/as.obis.R
 24030ced2c007800d731ac6f2d97b85d *R/as.vertnet.R
@@ -37,7 +37,7 @@ c783ff07f10af4b784381b0ecf7aceee *R/wkt_bbox.R
 41f615fbe866c8c06f88e55af078527c *man/as.ala.Rd
 4382b08f94c3fbcf021c700a1f5c7f7b *man/as.ecoengine-defunct.Rd
 7b91e48e0b0b4067e789e760b64abacd *man/as.gbif.Rd
-fbec644a0e5ff87108672645ed32677a *man/as.idigbio.Rd
+91ec586ae8ced5b2eea1518aaadcec99 *man/as.idigbio.Rd
 cd9bc31a40087d014c8d7e7ba7d0e32b *man/as.inat.Rd
 c733ba76629a25ec62db4af144c6f86c *man/as.obis.Rd
 ac0329397263d843eb365d698730780e *man/as.vertnet.Rd
@@ -62,6 +62,9 @@ d63a8f9531f4e2157c8f2219a4dd6847 *man/spocc_duplicates.Rd
 ceed9c3a15ce9e66357d8590f5cde0b8 *tests/fixtures/occ_inat.json
 48f7dba559f3f555f816f2c81d7620a6 *tests/fixtures/occ_obis.json
 57398246ecadfcb36a6edd1dd94bcc3c *tests/testthat.R
+b96f9876e7da79d32f0b190697e8e879 *tests/testthat/_problems/test-as.idigbio-7.R
+cdfa92852166e27a0dfcb7d6edea39f0 *tests/testthat/_problems/test-as.vertnet-11.R
+2c32180de950568555eb31d3594ed710 *tests/testthat/_problems/test-has_coords-19.R
 fd9cd4fca61b2c312ca993bc6697c372 *tests/testthat/helper-spocc.R
 fd9054ca765fe2d85e444bc19cf586d1 *tests/testthat/ids.rda
 8808073120b64e6afdcc44819d6f72f5 *tests/testthat/ids2.rda
@@ -75,12 +78,12 @@ c5b6cee92525e1c8854f489f0cb89cc5 *tests/testthat/ids8.rda
 807e91e27bb207d6f9386850589b8137 *tests/testthat/test-as.ala.R
 bcfb952e490fe1164dd36cc4408d683e *tests/testthat/test-as.ecoengine.R
 16cf350bd758f0afe552ef21e98d91bf *tests/testthat/test-as.gbif.R
-b714111b7a10eb8ef6bfb9469be122f6 *tests/testthat/test-as.idigbio.R
+2781dfbc8074c5c7851b2f9c110f5323 *tests/testthat/test-as.idigbio.R
 b9af69b3651f16edcdbe27d350fb9744 *tests/testthat/test-as.inat.R
 ab4870fc38544a89c64e8162346cd47f *tests/testthat/test-as.obis.R
 e6722ea8ed7926126dfbc1a216869f13 *tests/testthat/test-as.vertnet.R
 c48c2a700407ca133b5e14c6e50f33fd *tests/testthat/test-common_params.R
-588e1395774be8819f6829c442353129 *tests/testthat/test-geometry.R
+a328fa500e5097dca3a54e6493daa0a3 *tests/testthat/test-geometry.R
 bd9547c5765a8a3d1596176afd88e4a7 *tests/testthat/test-has_coords.R
 e7ed1d0c5d5abc06cd317e9cc04c6080 *tests/testthat/test-idbasedsearch.R
 9c56c6c0f57c15dd298975933c719966 *tests/testthat/test-occ.R
@@ -90,3 +93,4 @@ e7ed1d0c5d5abc06cd317e9cc04c6080 *tests/testthat/test-idbasedsearch.R
 e365f84b6c6c04c8a9f3cfd66fce84f4 *tests/testthat/test-print_methods.R
 81fc8ebc2cd588a525023f1ad40f46ff *tests/testthat/test-taxize-integration.R
 f22a16564f5880d72d00f6d3ae722bdf *tests/testthat/test-wkt_vis.R
+bb9d0f8343474862d3291a8576313992 *tests/testthat/testthat-problems.rds
